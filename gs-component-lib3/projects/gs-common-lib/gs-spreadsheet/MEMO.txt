@@ -1,0 +1,47 @@
+## @syncfusion/ej2 to  @devg1120/gs
+##
+## @syncfusion/ej2-spreadsheet => @devg1120/gs-spreadsheet
+
+rm -r src
+cp -r /home/admin/Angular/angular-gs-component/orglib/ej2-javascript-ui-controls/controls/spreadsheet/src .
+cp -r /home/admin/Angular/angular-gs-component/orglib/ej2-javascript-ui-controls/controls/spreadsheet/styles .
+cp -r /home/admin/Angular/angular-gs-component/orglib/ej2-javascript-ui-controls/controls/spreadsheet/spec .
+
+cp package.json  package.json.org
+cp /home/admin/Angular/angular-gs-component/orglib/ej2-javascript-ui-controls/controls/spreadsheet/package.json .
+
+#package.json
+---
+{
+  "name": "@gs-common-lib/gs-spreadsheet",
+}
+
+#tsconfig.lib.json
+---
+  "angularCompilerOptions": {
+    "annotateForClosureCompiler": false,
+
+
+---
+
+#ng-package.json
+---
+  "whitelistedNonPeerDependencies": [
+          "@syncfusion/ej2-base",
+          "@syncfusion/ej2-angular-base",
+          "@syncfusion/ej2-spreadsheet",
+          "@syncfusion/ej2-charts",
+          "@syncfusion/ej2-dropdowns",
+          "@syncfusion/ej2-grids",
+          "@syncfusion/ej2-navigations",
+          "dom"
+  ]
+
+---
+
+cd src
+mv index.ts  public-api.ts
+--------------------------------------------
+ng build @gs-common-lib/gs-spreadsheet
+
+

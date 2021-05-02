@@ -1,0 +1,11 @@
+            This migration uses the Angular compiler internally and therefore projects that no longer build successfully after the update cannot run the migration. Please ensure there are no AOT compilation errors and rerun the migration. The following project failed: tsconfig.app.json
+            
+            Error: error TS100: src/app/app.module.ts(13,5): Error during template compile of 'AppModule'
+              Could not resolve @syncfusion/ej2-angular-spreadsheet relative to [object Object]..
+            
+            
+            Could not migrate all undecorated classes that use dependency
+            injection. Some project targets could not be analyzed due to
+            TypeScript program failures.
+            
+            Migration can be rerun with: "ng update @angular/core --migrate-only migration-v9-undecorated-classes-with-di"

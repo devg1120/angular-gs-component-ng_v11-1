@@ -1,0 +1,33 @@
+{
+      "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../../out-tsc/lib",
+    "target": "es2015",
+    "module": "umd",
+    "moduleResolution": "node",
+    "declaration": true,
+    "inlineSources": true,
+                "skipLibCheck": true,
+        "importHelpers": true,
+    "types": [],
+    "lib": [
+      "dom",
+      "es2015"
+    ]
+  },
+  "angularCompilerOptions": {
+    "annotateForClosureCompiler": false,
+    "skipTemplateCodegen": true,
+    "strictMetadataEmit": true,
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true,
+    "enableResourceInlining": true
+  },
+  "include": [
+        "src/**/*.d.ts"
+   ],
+  "exclude": [
+    "src/test.ts",
+    "**/*.spec.ts",
+  ]
+}

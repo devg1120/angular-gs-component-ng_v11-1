@@ -1,0 +1,7 @@
+2174  ng g application admin
+2176  cd projects/
+2178  cd admin/
+2202  ng build spreadsheet
+2202  ng build admin
+2203  ng serve admin
+

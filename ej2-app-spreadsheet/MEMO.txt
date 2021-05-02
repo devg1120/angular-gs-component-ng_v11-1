@@ -1,0 +1,5 @@
+npm i
+ng version
+ng update @angular/cli @angular/core --force
+ng version
+ng serve

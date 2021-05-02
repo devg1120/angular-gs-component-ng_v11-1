@@ -1,0 +1,660 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { append, prepend, createElement, extend, EventHandler, closest, addClass } from '@syncfusion/ej2-base';
+import { isNullOrUndefined, setStyleAttribute, remove } from '@syncfusion/ej2-base';
+import { EventFieldsMapping, EventClickArgs, EventRenderedArgs, TdData, NotifyEventArgs, MoreEventsClickArgs } from '../base/interface';
+import { Schedule } from '../base/schedule';
+import { EventBase } from './event-base';
+import * as cls from '../base/css-constant';
+import * as events from '../base/constant';
+import * as util from '../base/util';
+
+const EVENT_GAP: number = 0;
+/**
+ * Month view events render
+ */
+export class MonthEvent extends EventBase {
+    public element: HTMLElement;
+    public fields: EventFieldsMapping;
+    public dateRender: Date[];
+    public renderedEvents: Record<string, any>[] = [];
+    public eventHeight: number;
+    private monthHeaderHeight: number = 0;
+    public workCells: HTMLElement[];
+    public cellWidth: number;
+    public cellHeight: number;
+    public moreIndicatorHeight: number = 19;
+    public renderType: string = 'day';
+    public maxHeight: boolean;
+    public withIndicator: boolean;
+    public maxOrIndicator: boolean;
+    public inlineValue: boolean;
+
+    constructor(parent: Schedule) {
+        super(parent);
+        this.element = this.parent.activeView.getPanel();
+        this.fields = this.parent.eventFields;
+        this.maxHeight = this.parent.eventSettings.enableMaxHeight && !this.parent.eventSettings.enableIndicator
+            && !this.parent.rowAutoHeight;
+        this.withIndicator = this.parent.eventSettings.enableMaxHeight && this.parent.eventSettings.enableIndicator
+            && !this.parent.rowAutoHeight;
+        this.maxOrIndicator = (this.maxHeight || this.withIndicator);
+        this.moreIndicatorHeight =
+            (this.parent.rowAutoHeight && this.parent.eventSettings.ignoreWhitespace) ? 0 : this.moreIndicatorHeight;
+        this.addEventListener();
+    }
+
+    private removeEventWarapper(appElement: Element[]): void {
+        if (appElement.length > 0) {
+            appElement = (this.parent.currentView === 'Month') ? appElement : [appElement[0]];
+            for (const wrap of appElement) {
+                if (!wrap.classList.contains('e-more-indicator') && wrap.parentElement && wrap.parentElement.parentNode) {
+                    remove(wrap.parentElement);
+                }
+            }
+        }
+    }
+
+    public renderAppointments(): void {
+        const conWrap: HTMLElement = this.parent.element.querySelector('.' + cls.CONTENT_WRAP_CLASS) as HTMLElement;
+        if (this.parent.rowAutoHeight) {
+            this.parent.uiStateValues.top = conWrap.scrollTop;
+            this.parent.uiStateValues.left = conWrap.scrollLeft;
+        }
+        const appointmentWrapper: HTMLElement[] = [].slice.call(this.element.querySelectorAll('.' + cls.APPOINTMENT_WRAPPER_CLASS));
+        if (this.parent.crudModule && this.parent.crudModule.crudObj.isCrudAction) {
+            for (let i: number = 0, len: number = this.parent.crudModule.crudObj.sourceEvent.length; i < len; i++) {
+                const appElement: Element[] = [].slice.call(this.element.querySelectorAll('.e-appointment-wrapper ' + '[data-group-index="' +
+                    this.parent.crudModule.crudObj.sourceEvent[i].groupIndex + '"]'));
+                this.removeEventWarapper(appElement);
+                if (this.parent.crudModule.crudObj.sourceEvent[i].groupIndex !==
+                    this.parent.crudModule.crudObj.targetEvent[i].groupIndex) {
+                    const ele: Element[] = [].slice.call(this.element.querySelectorAll('.e-appointment-wrapper ' + '[data-group-index="' +
+                        this.parent.crudModule.crudObj.targetEvent[i].groupIndex + '"]'));
+                    this.removeEventWarapper(ele);
+                }
+            }
+        } else {
+            for (const wrap of appointmentWrapper) {
+                remove(wrap);
+            }
+        }
+        this.removeHeightProperty(cls.CONTENT_TABLE_CLASS);
+        if (!this.element.querySelector('.' + cls.WORK_CELLS_CLASS)) {
+            return;
+        }
+        this.eventHeight = util.getElementHeightFromClass(this.element, cls.APPOINTMENT_CLASS);
+        const scrollTop: number = conWrap.scrollTop;
+        if (this.parent.rowAutoHeight && this.parent.virtualScrollModule && !isNullOrUndefined(this.parent.currentAction)) {
+            conWrap.scrollTop = conWrap.scrollTop - 1;
+        }
+        if (this.parent.activeViewOptions.group.resources.length > 0) {
+            this.renderResourceEvents();
+            if (this.parent.virtualScrollModule) {
+                this.parent.virtualScrollModule.updateFocusedWorkCell();
+            }
+        } else {
+            this.renderEventsHandler(this.parent.activeView.renderDates, this.parent.activeViewOptions.workDays);
+        }
+        if (this.parent.rowAutoHeight) {
+            this.updateBlockElements();
+            const data: NotifyEventArgs = {
+                cssProperties: this.parent.getCssProperties(),
+                module: this.parent.getModuleName(),
+                isPreventScrollUpdate: true,
+                scrollPosition: { left: this.parent.uiStateValues.left, top: this.parent.uiStateValues.top }
+            };
+            if (this.parent.virtualScrollModule) {
+                if (this.parent.currentAction) {
+                    conWrap.scrollTop = scrollTop;
+                    this.parent.currentAction = null;
+                } else {
+                    this.parent.virtualScrollModule.updateVirtualScrollHeight();
+                }
+            }
+            this.parent.notify(events.scrollUiUpdate, data);
+            if (!this.parent.enablePersistence) {
+                this.parent.notify(events.contentReady, {});
+            }
+        }
+        this.parent.renderTemplates();
+    }
+
+    public renderEventsHandler(dateRender: Date[], workDays: number[], resData?: TdData): void {
+        this.renderedEvents = [];
+        let eventsList: Record<string, any>[];
+        let blockList: Record<string, any>[];
+        let resIndex: number = 0;
+        if (resData) {
+            resIndex = resData.groupIndex;
+            this.cssClass = resData.cssClass;
+            this.groupOrder = resData.groupOrder;
+            eventsList = this.parent.eventBase.filterEventsByResource(resData, this.parent.eventsProcessed) as Record<string, any>[];
+            blockList = this.parent.eventBase.filterEventsByResource(resData, this.parent.blockProcessed) as Record<string, any>[];
+            this.workCells = [].slice.call(this.element.querySelectorAll('.' + cls.WORK_CELLS_CLASS + '[data-group-index="' + resIndex + '"]'));
+        } else {
+            eventsList = this.parent.eventsProcessed;
+            blockList = this.parent.blockProcessed;
+            this.workCells = [].slice.call(this.element.querySelectorAll('.' + cls.WORK_CELLS_CLASS));
+        }
+        this.sortByDateTime(eventsList);
+        this.sortByDateTime(blockList);
+        if (this.parent.currentView === 'Month' && this.parent.rowAutoHeight && this.parent.activeViewOptions.group.resources.length === 0) {
+            const totalCells: HTMLElement[] = [].slice.call(this.parent.element.querySelectorAll('.e-content-wrap table tr td:first-child'));
+            const height: number = this.parent.element.querySelector('.e-schedule-table').clientHeight / totalCells.length;
+            totalCells.forEach((cell: HTMLElement) => {
+                setStyleAttribute(cell, { 'height': height + 'px' });
+            });
+        }
+        const cellDetail: ClientRect = this.workCells.slice(-1)[0].getBoundingClientRect();
+        this.cellWidth = cellDetail.width;
+        this.cellHeight = cellDetail.height;
+        this.dateRender = dateRender;
+        const filteredDates: Date[] = this.getRenderedDates(dateRender);
+        this.getSlotDates(workDays);
+        this.processBlockEvents(blockList, resIndex, resData);
+        for (const event of eventsList) {
+            if (this.parent.resourceBase && !resData) {
+                this.cssClass = this.parent.resourceBase.getCssClass(event);
+            }
+            const splittedEvents: Record<string, any>[] = this.splitEvent(event, filteredDates || this.dateRender);
+            for (const event of splittedEvents) {
+                if (this.maxHeight) {
+                    const sDate: Date = this.parent.currentView === 'Month' ? event[this.fields.startTime] as Date :
+                        this.getStartTime(event, event.data as Record<string, any>);
+                    if (this.getIndex(sDate) > 0) {
+                        continue;
+                    }
+                }
+                this.updateIndicatorIcon(event);
+                this.renderEvents(event, resIndex, eventsList);
+            }
+        }
+        this.cssClass = null;
+        this.groupOrder = null;
+    }
+
+    private processBlockEvents(blockEvents: Record<string, any>[], resIndex: number, resData?: TdData): void {
+        for (const event of blockEvents) {
+            if (this.parent.resourceBase && !resData) {
+                this.cssClass = this.parent.resourceBase.getCssClass(event);
+            }
+            const blockSpannedList: Record<string, any>[] = [];
+            if (this.renderType === 'day' && !event[this.fields.isAllDay]) {
+                const temp: Record<string, any> = extend({}, event, null, true) as Record<string, any>;
+                let isSameDate: boolean = this.isSameDate(temp[this.fields.startTime] as Date, temp[this.fields.endTime] as Date);
+                temp.isBlockIcon = isSameDate;
+                if (!isSameDate && util.getDateInMs(temp[this.fields.startTime] as Date) > 0) {
+                    const e: Record<string, any> = extend({}, event, null, true) as Record<string, any>;
+                    e[this.fields.endTime] = util.addDays(util.resetTime(new Date(event[this.fields.startTime] + '')), 1);
+                    e.isBlockIcon = true;
+                    temp[this.fields.startTime] = e[this.fields.endTime];
+                    blockSpannedList.push(e);
+                }
+                isSameDate = this.isSameDate(temp[this.fields.startTime] as Date, temp[this.fields.endTime] as Date);
+                if (!isSameDate && util.getDateInMs(temp[this.fields.endTime] as Date) > 0) {
+                    const e: Record<string, any> = extend({}, event, null, true) as Record<string, any>;
+                    e[this.fields.startTime] = util.resetTime(new Date(event[this.fields.endTime] + ''));
+                    e.isBlockIcon = true;
+                    blockSpannedList.push(e);
+                    temp[this.fields.endTime] = e[this.fields.startTime];
+                }
+                blockSpannedList.push(temp);
+            } else {
+                blockSpannedList.push(event);
+            }
+            for (const blockEvent of blockSpannedList) {
+                const splittedEvents: Record<string, any>[] = this.splitEvent(blockEvent, this.dateRender);
+                for (const event of splittedEvents) {
+                    this.renderBlockEvents(event, resIndex, !!blockEvent.isBlockIcon);
+                }
+            }
+        }
+    }
+
+    private isSameDate(start: Date, end: Date): boolean {
+        return new Date(+start).setHours(0, 0, 0, 0) === new Date(+end).setHours(0, 0, 0, 0);
+    }
+
+    public renderBlockEvents(event: Record<string, any>, resIndex: number, isIcon: boolean): void {
+        const eventData: Record<string, any> = event.data as Record<string, any>;
+        const startTime: Date = this.getStartTime(event, eventData);
+        const endTime: Date = this.getEndTime(event, eventData);
+        const day: number = this.parent.getIndexOfDate(this.dateRender, util.resetTime(new Date(startTime.getTime())));
+        if (day < 0 || startTime > endTime) {
+            return;
+        }
+        const cellTd: HTMLElement = this.getCellTd(day);
+        const position: number = this.getPosition(startTime, endTime, event[this.fields.isAllDay] as boolean, day);
+        if (!isIcon) {
+            const diffInDays: number = eventData.count as number;
+            let appWidth: number = this.getEventWidth(startTime, endTime, event[this.fields.isAllDay] as boolean, diffInDays);
+            appWidth = (appWidth <= 0) ? this.cellWidth : appWidth;
+            const appLeft: number = (this.parent.enableRtl) ? 0 : position;
+            const appRight: number = (this.parent.enableRtl) ? position : 0;
+            this.renderWrapperElement(cellTd as HTMLElement);
+            const appHeight: number = this.cellHeight - this.monthHeaderHeight;
+            const appTop: number = this.getRowTop(resIndex);
+            const blockElement: HTMLElement = this.createBlockAppointmentElement(event, resIndex);
+            setStyleAttribute(blockElement, {
+                'width': appWidth + 'px', 'height': appHeight + 'px', 'left': appLeft + 'px',
+                'right': appRight + 'px', 'top': appTop + 'px'
+            });
+            this.renderEventElement(event, blockElement, cellTd);
+        } else {
+            this.renderBlockIndicator(cellTd, position, resIndex);
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public renderBlockIndicator(cellTd: HTMLElement, position: number, resIndex: number): void {
+        const blockIndicator: HTMLElement = createElement('div', { className: 'e-icons ' + cls.BLOCK_INDICATOR_CLASS });
+        if (isNullOrUndefined(cellTd.querySelector('.' + cls.BLOCK_INDICATOR_CLASS))) {
+            cellTd.appendChild(blockIndicator);
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public getStartTime(event: Record<string, any>, eventData: Record<string, any>): Date {
+        return event[this.fields.startTime] as Date;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public getEndTime(event: Record<string, any>, eventData: Record<string, any>): Date {
+        return event[this.fields.endTime] as Date;
+    }
+
+    public getCellTd(day: number): HTMLElement {
+        return this.workCells[day];
+    }
+
+    public getEventWidth(startDate: Date, endDate: Date, isAllDay: boolean, count: number): number {
+        return count * this.cellWidth - 1;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public getPosition(startTime: Date, endTime: Date, isAllDay: boolean, day: number): number {
+        return 0;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public getRowTop(resIndex: number): number {
+        return 0;
+    }
+
+    public updateIndicatorIcon(event: Record<string, any>): void {
+        if (this.parent.currentView.indexOf('Timeline') === -1 || this.parent.currentView === 'TimelineMonth'
+            || event[this.fields.isAllDay]) {
+            return;
+        }
+        const cloneData: Record<string, any> = event.data as Record<string, any>;
+        const start: Date = this.parent.activeView.getStartHour();
+        const end: Date = this.parent.activeView.getEndHour();
+        const startHour: Record<string, Date> = util.getStartEndHours(event[this.fields.startTime] as Date, start, end);
+        const endHour: Record<string, Date> = util.getStartEndHours(event[this.fields.endTime] as Date, start, end);
+        cloneData.isLeft = cloneData.isLeft || (<Date>cloneData[this.fields.startTime]).getTime() < startHour.startHour.getTime();
+        cloneData.isRight = cloneData.isRight || (<Date>cloneData[this.fields.endTime]).getTime() > endHour.endHour.getTime();
+    }
+
+    public renderResourceEvents(): void {
+        const resources: TdData[] = this.parent.uiStateValues.isGroupAdaptive ?
+            [this.parent.resourceBase.lastResourceLevel[this.parent.uiStateValues.groupIndex]] :
+            this.parent.resourceBase.lastResourceLevel;
+        if (this.parent.crudModule && this.parent.crudModule.crudObj.isCrudAction) {
+            for (let i: number = 0, len: number = this.parent.crudModule.crudObj.sourceEvent.length; i < len; i++) {
+                const sourceRes: TdData = this.parent.crudModule.crudObj.sourceEvent[i];
+                this.renderEventsHandler(sourceRes.renderDates, sourceRes.workDays, sourceRes);
+                if (this.parent.crudModule.crudObj.sourceEvent[i].groupIndex !==
+                    this.parent.crudModule.crudObj.targetEvent[i].groupIndex) {
+                    const target: TdData = this.parent.crudModule.crudObj.targetEvent[i];
+                    this.renderEventsHandler(target.renderDates, target.workDays, target);
+                }
+            }
+            this.parent.crudModule.crudObj.isCrudAction = false;
+        } else {
+            for (const slotData of resources) {
+                this.renderEventsHandler(slotData.renderDates, slotData.workDays, slotData);
+            }
+        }
+    }
+
+    public getSlotDates(workDays?: number[]): void {
+        this.slots = [];
+        const dates: number[] = this.dateRender.map((date: Date) => { return +date; });
+        const noOfDays: number = this.parent.activeViewOptions.showWeekend ? util.WEEK_LENGTH : workDays.length;
+        while (dates.length > 0) {
+            this.slots.push(dates.splice(0, noOfDays) as any);
+        }
+    }
+
+    public createAppointmentElement(record: Record<string, any>, resIndex: number, isCloneElement: boolean = false): HTMLElement {
+        const eventSubject: string = (record[this.fields.subject] || this.parent.eventSettings.fields.subject.default ||
+            this.parent.localeObj.getConstant('addTitle')) as string;
+        const newRecord: Record<string, any> = extend({}, record, record.data, true) as Record<string, any>;
+        const appointmentWrapper: HTMLElement = createElement('div', {
+            className: cls.APPOINTMENT_CLASS,
+            attrs: {
+                'data-id': 'Appointment_' + record[this.fields.id],
+                'role': 'button', 'tabindex': '0',
+                'aria-readonly': this.parent.eventBase.getReadonlyAttribute(record), 'aria-selected': 'false', 'aria-grabbed': 'true',
+                'aria-label': this.parent.getAnnocementString(newRecord, eventSubject)
+            }
+        });
+        if (!isCloneElement) {
+            appointmentWrapper.setAttribute('data-guid', record.Guid as string);
+        }
+        if (!isNullOrUndefined(this.cssClass)) {
+            addClass([appointmentWrapper], this.cssClass);
+        }
+        if (record[this.fields.isReadonly]) {
+            addClass([appointmentWrapper], 'e-read-only');
+        }
+        const appointmentDetails: HTMLElement = createElement('div', { className: cls.APPOINTMENT_DETAILS });
+        appointmentWrapper.appendChild(appointmentDetails);
+        if (this.parent.activeViewOptions.group.resources.length > 0) {
+            appointmentWrapper.setAttribute('data-group-index', resIndex.toString());
+        }
+        let templateElement: HTMLElement[];
+        const eventData: Record<string, any> = record.data as Record<string, any>;
+        const eventObj: Record<string, any> = this.getEventData(record);
+        if (!isNullOrUndefined(this.parent.activeViewOptions.eventTemplate)) {
+            const scheduleId: string = this.parent.element.id + '_';
+            const viewName: string = this.parent.activeViewOptions.eventTemplateName;
+            const templateId: string = scheduleId + viewName + 'eventTemplate';
+            templateElement = this.parent.getAppointmentTemplate()(eventObj, this.parent, 'eventTemplate', templateId, false);
+        } else {
+            const eventLocation: string = (record[this.fields.location] || this.parent.eventSettings.fields.location.default || '') as string;
+            const appointmentSubject: HTMLElement = createElement('div', {
+                className: cls.SUBJECT_CLASS,
+                innerHTML: (eventSubject + (eventLocation ? ';&nbsp' + eventLocation : ''))
+            });
+            const appointmentStartTime: HTMLElement = createElement('div', {
+                className: cls.APPOINTMENT_TIME + (this.parent.isAdaptive ? ' ' + cls.DISABLE_CLASS : ''),
+                innerHTML: this.parent.getTimeString(eventData[this.fields.startTime] as Date)
+            });
+            const appointmentEndTime: HTMLElement = createElement('div', {
+                className: cls.APPOINTMENT_TIME + (this.parent.isAdaptive ? ' ' + cls.DISABLE_CLASS : ''),
+                innerHTML: this.parent.getTimeString(eventData[this.fields.endTime] as Date)
+            });
+            if (this.parent.currentView === 'Month') {
+                if (record[this.fields.isAllDay]) {
+                    templateElement = [appointmentSubject];
+                    addClass([appointmentSubject], 'e-text-center');
+                } else if (eventData.count <= 1 && !eventData.isLeft && !eventData.isRight) {
+                    templateElement = [appointmentStartTime, appointmentSubject];
+                } else {
+                    templateElement = [];
+                    addClass([appointmentSubject], 'e-text-center');
+                    if (!eventData.isLeft) {
+                        templateElement.push(appointmentStartTime);
+                    }
+                    templateElement.push(appointmentSubject);
+                    if (!eventData.isRight) {
+                        templateElement.push(appointmentEndTime);
+                    }
+                }
+            } else {
+                let innerElement: HTMLElement[];
+                if (record[this.fields.isAllDay]) {
+                    const allDayString: HTMLElement = createElement('div', {
+                        className: cls.APPOINTMENT_TIME, innerHTML: this.parent.localeObj.getConstant('allDay')
+                    });
+                    innerElement = [appointmentSubject, allDayString];
+                } else {
+                    const timeString: string = this.parent.getTimeString(eventData[this.fields.startTime] as Date)
+                        + ' - ' + this.parent.getTimeString(eventData[this.fields.endTime] as Date);
+                    const appTime: HTMLElement = createElement('div', {
+                        className: cls.APPOINTMENT_TIME + (this.parent.isAdaptive ? ' ' + cls.DISABLE_CLASS : ''), innerHTML: timeString
+                    });
+                    const appLocation: HTMLElement = createElement('div', { className: cls.LOCATION_CLASS, innerHTML: eventLocation });
+                    innerElement = [appointmentSubject, appTime, appLocation];
+                }
+                const wrap: HTMLElement = createElement('div', { className: 'e-inner-wrap' });
+                append(innerElement, wrap);
+                templateElement = [wrap];
+            }
+        }
+        append(templateElement, appointmentDetails);
+        this.appendEventIcons(record, appointmentDetails);
+        this.renderResizeHandler(appointmentWrapper, record.data as Record<string, any>, record[this.fields.isReadonly] as boolean);
+        return appointmentWrapper;
+    }
+
+    private appendEventIcons(record: Record<string, any>, appointmentDetails: HTMLElement): void {
+        const eventData: Record<string, any> = record.data as Record<string, any>;
+        if (!isNullOrUndefined(record[this.fields.recurrenceRule]) || !isNullOrUndefined(record[this.fields.recurrenceID])) {
+            const iconClass: string = (record[this.fields.id] === record[this.fields.recurrenceID]) ?
+                cls.EVENT_RECURRENCE_ICON_CLASS : cls.EVENT_RECURRENCE_EDIT_ICON_CLASS;
+            appointmentDetails.appendChild(createElement('div', {
+                className: cls.ICON + ' ' + iconClass + (this.parent.isAdaptive ? ' ' + cls.DISABLE_CLASS : '')
+            }));
+        }
+        if (eventData.isLeft) {
+            const iconLeft: HTMLElement = createElement('div', {
+                className: cls.EVENT_INDICATOR_CLASS + ' ' + cls.ICON + ' ' + cls.EVENT_ICON_LEFT_CLASS
+            });
+            prepend([iconLeft], appointmentDetails);
+        }
+        if (eventData.isRight) {
+            const iconRight: HTMLElement = createElement('div', {
+                className: cls.EVENT_INDICATOR_CLASS + ' ' + cls.ICON + ' ' + cls.EVENT_ICON_RIGHT_CLASS
+            });
+            append([iconRight], appointmentDetails);
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public renderEvents(event: Record<string, any>, resIndex: number, eventsList?: Record<string, any>[]): void {
+        const startTime: Date = event[this.fields.startTime] as Date;
+        const endTime: Date = event[this.fields.endTime] as Date;
+        const day: number = this.parent.getIndexOfDate(this.dateRender, util.resetTime(startTime));
+        if (day < 0) {
+            return;
+        }
+        if ((startTime.getTime() < this.parent.minDate.getTime()) || (endTime.getTime() > this.parent.maxDate.getTime())) {
+            return;
+        }
+        const overlapCount: number = this.getIndex(startTime);
+        event.Index = overlapCount;
+        let appHeight: number = this.eventHeight;
+        this.renderedEvents.push(extend({}, event, null, true) as Record<string, any>);
+        const diffInDays: number = (event.data as Record<string, any>).count as number;
+        if (startTime.getTime() <= endTime.getTime()) {
+            const appWidth: number = (diffInDays * this.cellWidth) - 5;
+            const cellTd: Element = this.workCells[day];
+            const appTop: number = (overlapCount * (appHeight + EVENT_GAP));
+            this.renderWrapperElement(cellTd as HTMLElement);
+            const height: number =
+                this.monthHeaderHeight + ((overlapCount + 1) * (appHeight + EVENT_GAP)) + this.moreIndicatorHeight;
+            const enableAppRender: boolean = this.maxOrIndicator ? overlapCount < 1 ? true : false : this.cellHeight > height;
+            if (this.parent.rowAutoHeight || enableAppRender) {
+                let appointmentElement: HTMLElement;
+                if (this.inlineValue) {
+                    appointmentElement = this.parent.inlineModule.createInlineAppointmentElement();
+                } else {
+                    appointmentElement = this.createAppointmentElement(event, resIndex);
+                }
+                this.applyResourceColor(appointmentElement, event, 'backgroundColor', this.groupOrder);
+                this.wireAppointmentEvents(appointmentElement, event);
+                setStyleAttribute(appointmentElement, { 'width': appWidth + 'px', 'top': appTop + 'px' });
+                this.renderEventElement(event, appointmentElement, cellTd);
+                if (this.parent.rowAutoHeight) {
+                    const firstChild: HTMLElement = cellTd.parentElement.firstElementChild as HTMLElement;
+                    this.updateCellHeight(firstChild, height);
+                }
+            } else {
+                for (let i: number = 0; i < diffInDays; i++) {
+                    const cellTd: HTMLElement = this.workCells[day + i];
+                    if (cellTd && isNullOrUndefined(cellTd.querySelector('.' + cls.MORE_INDICATOR_CLASS))) {
+                        const startDate: Date = new Date(this.dateRender[day + i].getTime());
+                        const endDate: Date = util.addDays(this.dateRender[day + i], 1);
+                        const groupIndex: string = cellTd.getAttribute('data-group-index');
+                        const filterEvents: Record<string, any>[] = this.getFilteredEvents(startDate, endDate, groupIndex);
+                        const appArea: number = this.cellHeight - this.monthHeaderHeight - this.moreIndicatorHeight;
+                        appHeight = this.withIndicator ? appArea : appHeight;
+                        const renderedAppCount: number = Math.floor(appArea / (appHeight + EVENT_GAP));
+                        const count: number = (filterEvents.length - renderedAppCount) <= 0 ? 1 : (filterEvents.length - renderedAppCount);
+                        const moreIndicatorElement: HTMLElement = this.getMoreIndicatorElement(count, startDate, endDate);
+                        if (!isNullOrUndefined(groupIndex)) {
+                            moreIndicatorElement.setAttribute('data-group-index', groupIndex);
+                        }
+                        moreIndicatorElement.style.top = appArea + 'px';
+                        moreIndicatorElement.style.width = cellTd.offsetWidth - 2 + 'px';
+                        this.renderElement(cellTd, moreIndicatorElement);
+                        EventHandler.add(moreIndicatorElement, 'click', this.moreIndicatorClick, this);
+                    }
+                }
+            }
+        }
+    }
+
+    public updateCellHeight(cell: HTMLElement, height: number): void {
+        if ((height > cell.offsetHeight)) {
+            setStyleAttribute(cell as HTMLElement, { 'height': height + 'px' });
+        }
+    }
+
+    public updateBlockElements(): void {
+        const blockElement: HTMLElement[] = [].slice.call(this.element.querySelectorAll('.' + cls.BLOCK_APPOINTMENT_CLASS));
+        for (const element of blockElement) {
+            const target: HTMLElement = closest(element, 'tr') as HTMLElement;
+            this.monthHeaderHeight = (<HTMLElement>element.offsetParent).offsetTop - target.offsetTop;
+            element.style.height = ((target.offsetHeight - 1) - this.monthHeaderHeight) + 'px';
+            const firstChild: HTMLElement = target.firstElementChild as HTMLElement;
+            const width: number = Math.round(element.offsetWidth / firstChild.offsetWidth);
+            element.style.width = (firstChild.offsetWidth * width) + 'px';
+        }
+    }
+
+    // eslint-disable-next-line max-len
+    public getFilteredEvents(startDate: Date, endDate: Date, groupIndex: string, eventsList?: Record<string, any>[]): Record<string, any>[] {
+        let filteredEvents: Record<string, any>[];
+        if (isNullOrUndefined(groupIndex)) {
+            filteredEvents = this.filterEvents(startDate, endDate);
+        } else {
+            const data: TdData = this.parent.resourceBase.lastResourceLevel[parseInt(groupIndex, 10)];
+            filteredEvents = this.filterEvents(startDate, endDate, isNullOrUndefined(eventsList) ? undefined : eventsList, data);
+        }
+        return filteredEvents;
+    }
+
+    public getOverlapEvents(date: Date, appointments: Record<string, any>[]): Record<string, any>[] {
+        const appointmentsList: Record<string, any>[] = [];
+        for (const app of appointments) {
+            if ((util.resetTime(<Date>app[this.fields.startTime]).getTime() <= util.resetTime(date).getTime()) &&
+                (util.resetTime(<Date>app[this.fields.endTime]).getTime() >= util.resetTime(date).getTime())) {
+                appointmentsList.push(app);
+            }
+        }
+        return appointmentsList;
+    }
+
+    public getIndex(date: Date): number {
+        let appIndex: number = -1;
+        const appointments: Record<string, any>[] = <Record<string, any>[]>this.renderedEvents;
+        if (appointments.length > 0) {
+            const appointmentsList: Record<string, any>[] = this.getOverlapEvents(date, appointments);
+            const appLevel: number[] = appointmentsList.map((obj: Record<string, any>) => obj.Index) as number[];
+            appIndex = (appLevel.length > 0) ? this.getSmallestMissingNumber(appLevel) : 0;
+        }
+        return (appIndex === -1) ? 0 : appIndex;
+    }
+
+    public moreIndicatorClick(event: Event): void {
+        const target: Element = closest((event.target as Element), '.' + cls.MORE_INDICATOR_CLASS);
+        const startDate: Date = new Date(parseInt(target.getAttribute('data-start-date'), 10));
+        const endDate: Date = new Date(parseInt(target.getAttribute('data-end-date'), 10));
+        const groupIndex: string = target.getAttribute('data-group-index');
+        const moreArgs: MoreEventsClickArgs = {
+            cancel: false, event: event, element: target, isPopupOpen: true,
+            startTime: startDate, endTime: endDate, viewName: this.parent.getNavigateView()
+        };
+        if (groupIndex) {
+            moreArgs.groupIndex = parseInt(groupIndex, 10);
+        }
+        this.parent.trigger(events.moreEventsClick, moreArgs, (clickArgs: MoreEventsClickArgs) => {
+            if (!clickArgs.cancel) {
+                if (clickArgs.isPopupOpen) {
+                    const filteredEvents: Record<string, any>[] = this.getFilteredEvents(startDate, endDate, groupIndex);
+                    const moreArgs: EventClickArgs = { date: startDate, event: filteredEvents, element: event.target } as EventClickArgs;
+                    this.parent.quickPopup.moreEventClick(moreArgs, endDate, groupIndex);
+                } else {
+                    this.parent.setScheduleProperties({ selectedDate: startDate });
+                    this.parent.changeView(clickArgs.viewName, event);
+                }
+            }
+        });
+    }
+
+    public renderEventElement(event: Record<string, any>, appointmentElement: HTMLElement, cellTd: Element): void {
+        const eventType: string = appointmentElement.classList.contains(cls.BLOCK_APPOINTMENT_CLASS) ? 'blockEvent' : 'event';
+        const isAppointment: boolean = appointmentElement.classList.contains(cls.APPOINTMENT_CLASS);
+        const eventObj: Record<string, any> = this.getEventData(event);
+        const args: EventRenderedArgs = { data: eventObj, element: appointmentElement, cancel: false, type: eventType };
+        this.parent.trigger(events.eventRendered, args, (eventArgs: EventRenderedArgs) => {
+            if (eventArgs.cancel) {
+                this.renderedEvents.pop();
+            } else {
+                this.renderElement(cellTd, appointmentElement, isAppointment);
+            }
+        });
+    }
+
+    public getEventData(event: Record<string, any>): Record<string, any> {
+        const eventObj: Record<string, any> = extend({}, event, null, true) as Record<string, any>;
+        eventObj[this.fields.startTime] = (event.data as Record<string, any>)[this.fields.startTime];
+        eventObj[this.fields.endTime] = (event.data as Record<string, any>)[this.fields.endTime];
+        return eventObj;
+    }
+
+    public renderElement(cellTd: HTMLElement | Element, element: HTMLElement, isAppointment: boolean = false): void {
+        if (this.maxOrIndicator && isAppointment) {
+            this.setMaxEventHeight(element, cellTd as HTMLElement);
+        }
+        if (cellTd.querySelector('.' + cls.APPOINTMENT_WRAPPER_CLASS)) {
+            cellTd.querySelector('.' + cls.APPOINTMENT_WRAPPER_CLASS).appendChild(element);
+        } else {
+            const wrapper: HTMLElement = createElement('div', { className: cls.APPOINTMENT_WRAPPER_CLASS });
+            wrapper.appendChild(element);
+            cellTd.appendChild(wrapper);
+        }
+    }
+
+    private renderWrapperElement(cellTd: HTMLElement): void {
+        const element: HTMLElement = cellTd.querySelector('.' + cls.APPOINTMENT_WRAPPER_CLASS);
+        if (!isNullOrUndefined(element)) {
+            this.monthHeaderHeight = element.offsetTop - (<HTMLElement>cellTd).offsetTop;
+        } else {
+            const wrapper: HTMLElement = createElement('div', { className: cls.APPOINTMENT_WRAPPER_CLASS });
+            cellTd.appendChild(wrapper);
+            this.monthHeaderHeight = wrapper.offsetTop - (<HTMLElement>cellTd).offsetTop;
+        }
+    }
+
+    public getMoreIndicatorElement(count: number, startDate: Date, endDate: Date): HTMLElement {
+        const moreIndicatorElement: HTMLElement = createElement('div', {
+            className: cls.MORE_INDICATOR_CLASS,
+            innerHTML: '+' + count + '&nbsp;' + (this.parent.isAdaptive ? '' : this.parent.localeObj.getConstant('more')),
+            attrs: {
+                'tabindex': '0',
+                'data-start-date': startDate.getTime().toString(),
+                'data-end-date': endDate.getTime().toString(),
+                'role': 'list'
+            }
+        });
+        return moreIndicatorElement;
+    }
+
+    public removeHeightProperty(selector: string): void {
+        const rows: HTMLElement[] = [].slice.call(this.element.querySelectorAll('.' + selector + ' tbody tr'));
+        for (const row of rows) {
+            (row.firstElementChild as HTMLElement).style.height = '';
+        }
+    }
+
+    public setMaxEventHeight(event: HTMLElement, cell: HTMLElement): void {
+        const headerHeight: number = util.getOuterHeight(cell.querySelector('.' + cls.DATE_HEADER_CLASS));
+        const height: number = (cell.offsetHeight - headerHeight) - (this.maxHeight ? 0 : this.moreIndicatorHeight);
+        setStyleAttribute(event, { 'height': height + 'px', 'align-items': 'center' });
+    }
+
+}

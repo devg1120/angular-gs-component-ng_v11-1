@@ -1,0 +1,54 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "paths": {
+      "spreadsheet": [
+        "dist/spreadsheet"
+      ],
+      "spreadsheet/*": [
+        "dist/spreadsheet/*"
+      ],
+      "gs-common": [
+        "dist/gs-common"
+      ],
+      "gs-common/*": [
+        "dist/gs-common/*"
+      ],
+      "@gs-common-lib/gs-spreadsheet": [
+        "dist/gs-common-lib/gs-spreadsheet"
+      ],
+      "@gs-common-lib/gs-spreadsheet/*": [
+        "dist/gs-common-lib/gs-spreadsheet/*"
+      ],
+      "@gs-common-lib/gs-base": [
+        "dist/gs-common-lib/gs-base"
+      ],
+      "@gs-common-lib/gs-base/*": [
+        "dist/gs-common-lib/gs-base/*"
+      ],
+      "@gs-common-lib/gs-angular-base": [
+        "dist/gs-common-lib/gs-angular-base"
+      ],
+      "@gs-common-lib/gs-angular-base/*": [
+        "dist/gs-common-lib/gs-angular-base/*"
+      ]
+    }
+  }
+}

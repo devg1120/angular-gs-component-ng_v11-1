@@ -1,0 +1,18 @@
+ng update @angular/cli @angular/core --force
+
+----
+npm i
+  ng build spreadsheet
+  ng serve admin --host 0.0.0.0
+
+---
+ ng g application customer --style=scss --routing=true
+ ng g application admin -style=scss --routing=true
+ ng g library common
+ ng g library common/aaaa
+ ng g library common/bbb
+
+--
+@syncfusion/ej2-angular-spreadsheet
+↓
+@devg1120/gs-angular-spreadsheet

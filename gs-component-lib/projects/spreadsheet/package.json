@@ -1,0 +1,16 @@
+{
+		"name": "@syncfusion/ej2-angular-spreadsheet",
+		"version": "0.0.1",
+		"dependencies": {
+				"@syncfusion/ej2-angular-base": "^19.1.58",
+				"@syncfusion/ej2-base": "~19.1.57",
+				"@syncfusion/ej2-spreadsheet": "19.1.58",
+				"tslib": "^2.0.0"
+		},
+		"devDependencies": {
+				"@angular/common": "~11.2.13",
+				"@angular/compiler": "~11.2.13",
+				"@angular/core": "~11.2.13",
+				"node-sass": "^5.0.0"
+		}
+}
