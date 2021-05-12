@@ -1,0 +1,86 @@
+## run
+
+npm i
+ng build @gs-common-lib/gs-spreadsheet
+ng build spreadsheet
+ng serve admin --host 0.0.0.0
+
+------------------------------------
+## install setup
+
+@syncfusion/ej2-angular-spreadsheet
+@syncfusion/ej2-spreadsheet
+↓
+@devg1120/gs-angular-spreadsheet
+@devg1120/gs-spreadsheet
+
+------------------------------------
+ng g application admin -style=scss --routing=true
+ng g library spreadsheet
+ng g library '@gs-common-lib/gs-spreadsheet'
+ng g library '@gs-common-lib/gs-base'
+ng g library '@gs-common-lib/gs-angular-base'
+
+
+-----------------------------
+gs-common-lib/
+|-- gs-angular-base
+|   |-- README.md
+|   |-- karma.conf.js
+|   |-- ng-package.json
+|   |-- package.json
+|   |-- src
+|   |   |-- lib
+|   |   |   |-- gs-angular-base.component.spec.ts
+|   |   |   |-- gs-angular-base.component.ts
+|   |   |   |-- gs-angular-base.module.ts
+|   |   |   |-- gs-angular-base.service.spec.ts
+|   |   |   `-- gs-angular-base.service.ts
+|   |   |-- public-api.ts
+|   |   `-- test.ts
+|   |-- tsconfig.lib.json
+|   |-- tsconfig.spec.json
+|   `-- tslint.json
+|-- gs-base
+|   |-- README.md
+|   |-- karma.conf.js
+|   |-- ng-package.json
+|   |-- package.json
+|   |-- src
+|   |   |-- lib
+|   |   |   |-- gs-base.component.spec.ts
+|   |   |   |-- gs-base.component.ts
+|   |   |   |-- gs-base.module.ts
+|   |   |   |-- gs-base.service.spec.ts
+|   |   |   `-- gs-base.service.ts
+|   |   |-- public-api.ts
+|   |   `-- test.ts
+|   |-- tsconfig.lib.json
+|   |-- tsconfig.spec.json
+|   `-- tslint.json
+`-- gs-spreadsheet
+    |-- README.md
+    |-- karma.conf.js
+    |-- ng-package.json
+    |-- package.json
+    |-- src
+    |   |-- lib
+    |   |   |-- gs-spreadsheet.component.spec.ts
+    |   |   |-- gs-spreadsheet.component.ts
+    |   |   |-- gs-spreadsheet.module.ts
+    |   |   |-- gs-spreadsheet.service.spec.ts
+    |   |   `-- gs-spreadsheet.service.ts
+    |   |-- public-api.ts
+    |   `-- test.ts
+    |-- tsconfig.lib.json
+    |-- tsconfig.spec.json
+    `-- tslint.json
+
+-----------------------------
+
+
+npm i
+ng build @gs-common-lib/gs-spreadsheet
+ng build spreadsheet
+ng serve admin --host 0.0.0.0
+

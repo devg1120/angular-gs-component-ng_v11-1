@@ -185,11 +185,11 @@
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
-            "aot": true,
+            "aot": false,
           "options": {
             "tsConfig": "projects/gs-common-lib/gs-spreadsheet/tsconfig.lib.json",
             "project": "projects/gs-common-lib/gs-spreadsheet/ng-package.json"
-          },
+          }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
