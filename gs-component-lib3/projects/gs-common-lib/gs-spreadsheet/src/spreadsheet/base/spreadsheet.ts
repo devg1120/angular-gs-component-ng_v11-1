@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path='../../workbook/base/workbook-model.d.ts'/>
 import { HTMLElement } from 'dom'; //gs
 import { HTMLDivElement } from 'dom'; //gs
 import { Property, NotifyPropertyChanges, INotifyPropertyChanged, ModuleDeclaration, Event, isUndefined } from '@syncfusion/ej2-base';

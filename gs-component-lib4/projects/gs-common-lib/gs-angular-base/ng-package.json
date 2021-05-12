@@ -3,13 +3,5 @@
   "dest": "../../../dist/gs-common-lib/gs-angular-base",
   "lib": {
     "entryFile": "src/public-api.ts"
-  },
-  "allowedNonPeerDependencies": [
-          "@syncfusion/ej2-base",
-         "@syncfusion/ej2-icons",
-          "zone.js",
-             "core-js",
-              "reflect-metadata",
-                 "rxjs"
-  ]
+  }
 }

@@ -1,8 +1,7 @@
-/**
- * Index
+/*
+ * Public API Surface of gs-angular-base
  */
-export * from './complex-array-base';
-export * from './component-base';
-export * from './form-base';
-export * from './util';
-export * from './template';
+
+export * from './lib/gs-angular-base.service';
+export * from './lib/gs-angular-base.component';
+export * from './lib/gs-angular-base.module';

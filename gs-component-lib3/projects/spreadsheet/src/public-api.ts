@@ -10,4 +10,5 @@ export {DefinedNameDirective,DefinedNamesDirective} from './lib/definednames.dir
 export { SpreadsheetComponent} from './lib/spreadsheet.component';
 export { SpreadsheetModule } from './lib/spreadsheet.module';
 export { SpreadsheetAllModule, ClipboardService, EditService, KeyboardNavigationService, KeyboardShortcutService, CollaborativeEditingService, SelectionService, ContextMenuService, FormulaBarService, RibbonService, SaveService, OpenService, SheetTabsService, DataBindService, AllModuleService, BasicModuleService, CellFormatService, NumberFormatService, FormulaService } from './lib/spreadsheet-all.module';
-export * from '@syncfusion/ej2-spreadsheet';
+//export * from '@syncfusion/ej2-spreadsheet';
+export * from '@devg1120/gs-spreadsheet';

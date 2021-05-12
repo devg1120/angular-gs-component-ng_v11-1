@@ -2,14 +2,14 @@
 		"name": "@devg1120/gs-angular-spreadsheet",
 		"version": "0.0.1",
 		"dependencies": {
-				"@devg1120/gs-angular-base": "../../dist/gs-common-lib/gs-angular-base/",
+				"@syncfusion/ej2-angular-base": "^19.1.58",
 				"@syncfusion/ej2-base": "~19.1.57",
 				"@devg1120/gs-spreadsheet": "../../dist/gs-common-lib/gs-spreadsheet/"
 		},
 		"devDependencies": {
-				"@angular/common": "~10.0.0",
-				"@angular/compiler": "~10.0.0",
-				"@angular/core": "~10.0.0",
+				"@angular/common": "~8.0.0",
+				"@angular/compiler": "~8.0.0",
+				"@angular/core": "~8.0.0",
 				"node-sass": "^5.0.0"
 		}
 }

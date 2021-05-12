@@ -11,7 +11,8 @@ import { SheetDirective, SheetsDirective } from './sheets.directive';
 import { DefinedNameDirective, DefinedNamesDirective } from './definednames.directive';
 import { SpreadsheetComponent } from './spreadsheet.component';
 import { SpreadsheetModule } from './spreadsheet.module';
-import {Clipboard, Edit, KeyboardNavigation, KeyboardShortcut, CollaborativeEditing, Selection, ContextMenu, FormulaBar, Ribbon, Save, Open, SheetTabs, DataBind, AllModule, BasicModule, CellFormat, NumberFormat, Formula} from '@syncfusion/ej2-spreadsheet'
+//import {Clipboard, Edit, KeyboardNavigation, KeyboardShortcut, CollaborativeEditing, Selection, ContextMenu, FormulaBar, Ribbon, Save, Open, SheetTabs, DataBind, AllModule, BasicModule, CellFormat, NumberFormat, Formula} from '@syncfusion/ej2-spreadsheet'
+import {Clipboard, Edit, KeyboardNavigation, KeyboardShortcut, CollaborativeEditing, Selection, ContextMenu, FormulaBar, Ribbon, Save, Open, SheetTabs, DataBind, AllModule, BasicModule, CellFormat, NumberFormat, Formula} from '@devg1120/gs-spreadsheet'
 
 
 export const ClipboardService: ValueProvider = { provide: 'SpreadsheetClipboard', useValue: Clipboard};

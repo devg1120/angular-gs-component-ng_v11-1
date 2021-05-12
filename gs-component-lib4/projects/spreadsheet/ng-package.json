@@ -1,9 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/spreadsheet",
-  "assets": [
-      "./styles/**/*.theme.scss"
-  ],
   "lib": {
     "entryFile": "src/public-api.ts"
   },
@@ -11,7 +8,6 @@
  	"@syncfusion/ej2-base",
 	"@syncfusion/ej2-angular-base",
         "@syncfusion/ej2-spreadsheet",
-       "@devg1120/gs-angular-base",
-           "@devg1120/gs-spreadsheet"
+        "@devg1120/gs-spreadsheet"
   ]
 }

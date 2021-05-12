@@ -1,5 +1,5 @@
 import { Directive, ViewContainerRef, ContentChildren, ContentChild } from '@angular/core';
-import { ComplexBase, ArrayBase, setValue } from '@devg1120/gs-angular-base';
+import { ComplexBase, ArrayBase, setValue } from '@syncfusion/ej2-angular-base';
 
 import { CellsDirective } from './cells.directive';
 

@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewContainerRef, ChangeDetectionStrategy, QueryList, Renderer2, Injector, ValueProvider, ContentChild } from '@angular/core';
-import { ComponentBase, IComponentBase, applyMixins, ComponentMixins, PropertyCollectionInfo, setValue } from '@devg1120/gs-angular-base';
-import { Spreadsheet } from '@devg1120/gs-spreadsheet';
-import { Template } from '@devg1120/gs-angular-base';
+import { ComponentBase, IComponentBase, applyMixins, ComponentMixins, PropertyCollectionInfo, setValue } from '@syncfusion/ej2-angular-base';
+import { Spreadsheet } from '@syncfusion/ej2-spreadsheet';
+import { Template } from '@syncfusion/ej2-angular-base';
 import { SheetsDirective } from './sheets.directive';
 import { DefinedNamesDirective } from './definednames.directive';
 

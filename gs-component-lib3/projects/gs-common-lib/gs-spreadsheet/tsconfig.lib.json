@@ -2,17 +2,31 @@
       "extends": "../../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../../out-tsc/lib",
-    "target": "es2015",
-    "module": "umd",
-    "moduleResolution": "node",
-    "declaration": true,
-    "inlineSources": true,
-                "skipLibCheck": true,
-        "importHelpers": true,
+
+        "target": "es5",
+        "module": "es6",
+        "declaration": false,
+        "removeComments": true,
+        "noLib": false,
+        "experimentalDecorators": true,
+        "sourceMap": true,
+        "pretty": true,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+        "noImplicitAny": false,
+        "noImplicitReturns": true,
+        "noImplicitUseStrict": false,
+        "noFallthroughCasesInSwitch": true,
+        "allowJs": false,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "node",
+        "suppressImplicitAnyIndexErrors": true,
+
     "types": [],
     "lib": [
       "dom",
-      "es2015"
+      "es5",
+      "es6"
     ]
   },
   "angularCompilerOptions": {
@@ -24,7 +38,7 @@
     "enableResourceInlining": true
   },
   "include": [
-        "src/**/*.d.ts"
+        "src/**/*"
    ],
   "exclude": [
     "src/test.ts",

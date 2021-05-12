@@ -48,12 +48,6 @@
       ],
       "@gs-common-lib/gs-angular-base/*": [
         "dist/gs-common-lib/gs-angular-base/*"
-      ],
-      "@gs-common-lib/gs-icon": [
-        "dist/gs-common-lib/gs-icon"
-      ],
-      "@gs-common-lib/gs-icon/*": [
-        "dist/gs-common-lib/gs-icon/*"
       ]
     }
   }

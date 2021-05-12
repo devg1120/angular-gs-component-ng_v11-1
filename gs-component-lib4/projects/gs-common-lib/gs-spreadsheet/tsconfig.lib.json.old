@@ -8,11 +8,11 @@
     "types": [],
     "lib": [
       "dom",
-      "es2018"
+      "es2015"
     ]
   },
   "angularCompilerOptions": {
-    "annotateForClosureCompiler": true,
+    "annotateForClosureCompiler": false,
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
     "fullTemplateTypeCheck": true,
