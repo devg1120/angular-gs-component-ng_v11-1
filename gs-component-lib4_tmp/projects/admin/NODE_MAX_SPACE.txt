@@ -1,2 +1,0 @@
-export NODE_OPTIONS="--max-old-space-size=3000"
-export NODE_OPTIONS="--max-old-space-size=3000  --gc_interval=100"
