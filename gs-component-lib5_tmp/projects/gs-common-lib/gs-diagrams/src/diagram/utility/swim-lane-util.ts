@@ -772,7 +772,8 @@ export function updateConnectorsProperties(connectors: string[], diagram: Diagra
  */
 export function laneInterChanged(diagram: Diagram, obj: NodeModel, target: NodeModel, position?: PointModel): void {
 
-    let index: number; let undoElement: StackEntryObject; let entry: HistoryEntry; let redoElement: StackEntryObject;
+    //let index: number; let undoElement: StackEntryObject; let entry: HistoryEntry; let redoElement: StackEntryObject;
+    let index: number; let undoElement: StackEntryObject;  let redoElement: StackEntryObject;
     let sourceIndex: number; let targetIndex: number; let temp: LaneModel;
     let sourceLaneIndex: number; let targetLaneIndex: number; let rowIndex: number;
 
@@ -848,13 +849,15 @@ export function laneInterChanged(diagram: Diagram, obj: NodeModel, target: NodeM
                 redoElement = {
                     target: cloneObject(undoElement.source), source: cloneObject(undoElement.target)
                 };
+                /*
                 entry = {
                     type: 'LanePositionChanged', redoObject: redoElement as NodeModel,
                     undoObject: undoElement as NodeModel, category: 'Internal'
                 };
                 if (!(diagram.diagramActions & DiagramAction.UndoRedo)) {
-                    diagram.commandHandler.addHistoryEntry(entry);
+                    //diagram.commandHandler.addHistoryEntry(entry);
                 }
+                */
                 ChangeLaneIndex(diagram, swimLane, 0);
                 updateConnectorsProperties(connectors, diagram);
                 updateSwimLaneChildPosition(lanes as Lane[], diagram);
@@ -1017,7 +1020,8 @@ export function addLane(diagram: Diagram, parent: NodeModel, lane: LaneModel, co
         diagram.protectPropertyChange(true);
         const grid: GridPanel = swimLane.wrapper.children[0] as GridPanel; const bounds: Rect = grid.bounds;
         const shape: SwimLaneModel = swimLane.shape as SwimLaneModel; let redoObj: NodeModel;
-        let orientation: boolean = false; let entry: HistoryEntry;
+        //let orientation: boolean = false; let entry: HistoryEntry;
+        let orientation: boolean = false; 
         let index: number; let children: NodeModel[];
         let j: number; let i: number; let k: number; let cell: GridCell; let child: NodeModel; let point: PointModel;
         const laneObj: LaneModel = new Lane(shape as Shape, 'lanes', lane, true);
@@ -1070,11 +1074,13 @@ export function addLane(diagram: Diagram, parent: NodeModel, lane: LaneModel, co
                 ((shape.header && (shape as SwimLane).hasHeader) ? diagram.nameTable[grid.rows[1].cells[index].children[0].id] :
                     diagram.nameTable[grid.rows[0].cells[index].children[0].id]);
             if (!(diagram.diagramActions & DiagramAction.UndoRedo)) {
+            /*
                 entry = {
                     type: 'LaneCollectionChanged', changeType: 'Insert', undoObject: cloneObject(laneObj),
                     redoObject: cloneObject(redoObj), category: 'Internal'
                 };
                 diagram.addHistoryEntry(entry);
+                */
             }
             const startRowIndex: number = (shape.orientation === 'Horizontal') ?
                 index : ((shape.header && (shape as SwimLane).hasHeader) ? 1 : 0);
@@ -1228,11 +1234,13 @@ export function addPhase(diagram: Diagram, parent: NodeModel, newPhase: PhaseMod
             diagram.drag(parent, x - parent.wrapper.bounds.x, y - parent.wrapper.bounds.y);
             checkPhaseOffset(parent, diagram);
             if (!(diagram.diagramActions & DiagramAction.UndoRedo)) {
+            /*
                 const entry: HistoryEntry = {
                     type: 'PhaseCollectionChanged', changeType: 'Insert', undoObject: cloneObject(phaseObj),
                     redoObject: cloneObject(phaseNode), category: 'Internal'
                 };
                 diagram.addHistoryEntry(entry);
+                */
             }
             diagram.updateDiagramObject(parent);
         }
@@ -1252,31 +1260,32 @@ export function addPhase(diagram: Diagram, parent: NodeModel, newPhase: PhaseMod
  * @private
  */
 export function addLastPhase(
-    phaseIndex: number, parent: NodeModel, entry: HistoryEntry, grid: GridPanel, orientation: boolean, newPhase: PhaseModel): void {
+    //phaseIndex: number, parent: NodeModel, entry: HistoryEntry, grid: GridPanel, orientation: boolean, newPhase: PhaseModel): void {
+    phaseIndex: number, parent: NodeModel,  grid: GridPanel, orientation: boolean, newPhase: PhaseModel): void {
     const shape: SwimLaneModel = parent.shape as SwimLaneModel;
     const prevPhase: PhaseModel = shape.phases[phaseIndex - 2];
-    const prevOffset: number = entry.previousPhase.offset;
+    //const prevOffset: number = entry.previousPhase.offset;
     if (orientation) {
         const nextCol: ColumnDefinition = grid.columnDefinitions()[phaseIndex - 1];
         const addPhase: ColumnDefinition = new ColumnDefinition();
-        if (phaseIndex > 1) {
-            addPhase.width = (nextCol.width) - (prevOffset - prevPhase.offset);
-            nextCol.width = prevOffset - prevPhase.offset;
-        } else {
-            addPhase.width = nextCol.width - prevOffset;
-            nextCol.width = prevOffset;
-        }
+        //if (phaseIndex > 1) {
+        //    addPhase.width = (nextCol.width) - (prevOffset - prevPhase.offset);
+        //    nextCol.width = prevOffset - prevPhase.offset;
+        //} else {
+        //    addPhase.width = nextCol.width - prevOffset;
+        //    nextCol.width = prevOffset;
+        //}
         grid.updateColumnWidth(phaseIndex - 1, nextCol.width, false);
         grid.addColumn(phaseIndex, addPhase, false);
     } else {
         const nextCol: RowDefinition = grid.rowDefinitions()[phaseIndex];
         const addPhase: RowDefinition = new RowDefinition();
         if (phaseIndex > 1) {
-            addPhase.height = (entry.undoObject as PhaseModel).offset - prevOffset;
-            nextCol.height = prevOffset - prevPhase.offset;
+           // addPhase.height = (entry.undoObject as PhaseModel).offset - prevOffset;
+           // nextCol.height = prevOffset - prevPhase.offset;
         } else {
-            addPhase.height = nextCol.height - prevOffset;
-            nextCol.height = prevOffset;
+           // addPhase.height = nextCol.height - prevOffset;
+           // nextCol.height = prevOffset;
         }
         grid.updateRowHeight(phaseIndex, nextCol.height, false);
         grid.addRow(1 + phaseIndex, addPhase, false);
@@ -1794,11 +1803,13 @@ export function removeLane(diagram: Diagram, lane: NodeModel, swimLane: NodeMode
                 const undoObj: LaneModel = cloneObject(shape.lanes[laneIndex]) as LaneModel;
                 removeLaneChildNode(diagram, swimLane, lane as NodeModel, undefined, laneIndex);
                 if (!(diagram.diagramActions & DiagramAction.UndoRedo)) {
+                /*
                     const entry: HistoryEntry = {
                         type: 'LaneCollectionChanged', changeType: 'Remove', undoObject: undoObj,
                         redoObject: cloneObject(lane), category: 'Internal'
                     };
                     diagram.addHistoryEntry(entry);
+                    */
                 }
                 shape.lanes.splice(laneIndex, 1);
                 let index: number = (lane) ? (shape.orientation === 'Horizontal' ? lane.rowIndex : lane.columnIndex) :
@@ -1896,11 +1907,13 @@ export function removePhase(diagram: Diagram, phase: NodeModel, swimLane: NodeMo
         const undoObj: PhaseModel = cloneObject(shape.phases[phaseIndex]) as PhaseModel;
         shape.phases.splice(phaseIndex, 1);
         if (!(diagram.diagramActions & DiagramAction.UndoRedo)) {
+        /*
             const entry: HistoryEntry = {
                 type: 'PhaseCollectionChanged', changeType: 'Remove', undoObject: undoObj, previousPhase: previousPhase,
                 redoObject: cloneObject(phase), category: 'Internal', isLastPhase: isLastPhase
             };
             diagram.addHistoryEntry(entry);
+            */
         }
         if (shape.orientation === 'Horizontal') {
             removeHorizontalPhase(diagram, grid, phase, phaseIndex);

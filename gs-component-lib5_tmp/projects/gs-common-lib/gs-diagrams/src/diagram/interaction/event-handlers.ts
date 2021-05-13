@@ -1874,11 +1874,13 @@ export class DiagramEventHandler {
                             offsetX: parentNode.offsetX, offsetY: parentNode.offsetY, width: parentNode.width, height: parentNode.height,
                             rotateAngle: parentNode.rotateAngle
                         } as Node);
+                        /*
                         const entry: HistoryEntry = {
                             redoObject: { sourceIndex: undefined, source: undoElement.source } as NodeModel,
                             type: 'StackChildPositionChanged', undoObject: undoElement as NodeModel, category: 'Internal'
                         };
                         if (!(this.diagram.diagramActions & DiagramAction.UndoRedo)) { this.diagram.addHistoryEntry(entry); }
+                        */
                     }
                     if (obj && obj.container && (obj.container.type === 'Stack' ||
                         (obj.container.type === 'Canvas' && (obj as Node).parentId === ''))) {
@@ -1982,12 +1984,14 @@ export class DiagramEventHandler {
             obj.wrapper.arrange(obj.wrapper.desiredSize);
             if (this.currentAction === 'ResizeEast' || this.currentAction === 'ResizeSouth') {
                 const redoObject: NodeModel = cloneObject(obj);
+                /*
                 const entry: HistoryEntry = {
                     category: 'Internal',
                     type: (isUpdateRow) ? 'RowHeightChanged' : 'ColumnWidthChanged',
                     undoObject: undoObj, redoObject: redoObject
                 };
                 this.diagram.addHistoryEntry(entry);
+                */
             }
         }
         updateConnectorsProperties(connectors, this.diagram);

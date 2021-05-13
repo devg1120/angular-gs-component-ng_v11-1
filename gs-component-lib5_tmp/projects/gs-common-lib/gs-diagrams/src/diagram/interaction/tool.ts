@@ -616,21 +616,25 @@ export class ConnectTool extends ToolBase {
             this.commandHandler.removeTerminalSegment(connector as Connector, true);
             if (this.undoElement && args.source) {
                 // eslint-disable-next-line prefer-const
+                /*
                 let obj: SelectorModel; obj = cloneObject(args.source);
                 const entry: HistoryEntry = {
                     type: 'ConnectionChanged', redoObject: cloneObject(obj), undoObject: cloneObject(this.undoElement),
                     category: 'Internal'
                 };
                 this.commandHandler.addHistoryEntry(entry);
+                */
             }
         } else if (!(this instanceof ConnectorDrawingTool) &&
             (this.endPoint === 'BezierTargetThumb' || this.endPoint === 'BezierSourceThumb')) {
             if (this.undoElement && args.source) {
+            /*
                 const obj: SelectorModel = cloneObject(args.source);
                 const entry: HistoryEntry = {
                     type: 'SegmentChanged', redoObject: obj, undoObject: this.undoElement, category: 'Internal'
                 };
                 this.commandHandler.addHistoryEntry(entry);
+                */
             }
         }
         this.commandHandler.updateBlazorSelector();
@@ -942,6 +946,7 @@ export class MoveTool extends ToolBase {
                     if (!isBlazor()) {
                         this.commandHandler.triggerEvent(DiagramEvent.positionChange, arg);
                     }
+                    /*
                     if (!isPreventHistory) {
                         this.commandHandler.startGroupAction(); historyAdded = true;
                         const entry: HistoryEntry = {
@@ -957,6 +962,7 @@ export class MoveTool extends ToolBase {
                         }
                         this.commandHandler.addHistoryEntry(entry);
                     }
+                    */
                 }
             }
             const snappedPoint: PointModel = this.commandHandler.snapPoint(this.prevPosition, this.currentPosition, 0, 0);
@@ -996,6 +1002,7 @@ export class MoveTool extends ToolBase {
                 this.commandHandler.endGroupAction();
             }
         } else {
+        /*
             redoObject.nodes.push(cloneObject(args.source) as Node);
             args.portId = this.portId;
             obj = cloneObject(redoObject);
@@ -1004,6 +1011,7 @@ export class MoveTool extends ToolBase {
                 redoObject: cloneObject(obj), undoObject: cloneObject(this.undoElement), category: 'Internal'
             };
             this.commandHandler.addHistoryEntry(entry);
+            */
         }
         this.commandHandler.updateBlazorSelector();
         super.mouseUp(args);
@@ -1244,11 +1252,13 @@ export class RotateTool extends ToolBase {
             {this.commandHandler.triggerEvent(DiagramEvent.rotateChange, arg);}
             let obj: SelectorModel;
             obj = cloneObject(args.source);
+            /*
             const entry: HistoryEntry = {
                 type: 'RotationChanged', redoObject: cloneObject(obj), undoObject: cloneObject(this.undoElement), category: 'Internal',
                 childTable: this.childTable
             };
             this.commandHandler.addHistoryEntry(entry);
+            */
             this.commandHandler.updateSelector();
         }
         this.commandHandler.updateBlazorSelector();
@@ -1453,6 +1463,7 @@ export class ResizeTool extends ToolBase {
                 };
                 this.commandHandler.triggerEvent(DiagramEvent.sizeChange, arg);
             }
+            /*
             const obj: SelectorModel = cloneObject(args.source);
             const entry: HistoryEntry = {
                 type: 'SizeChanged', redoObject: cloneObject(obj), undoObject: cloneObject(this.undoElement), category: 'Internal',
@@ -1470,6 +1481,7 @@ export class ResizeTool extends ToolBase {
                 }
                 this.commandHandler.endGroupAction();
             }
+            */
         }
         this.commandHandler.updateBlazorSelector();
         super.mouseUp(args);
@@ -2223,13 +2235,16 @@ export class LabelDragTool extends ToolBase {
     public mouseUp(args: MouseEventArgs): void {
         this.checkPropertyValue();
         const redoValue: NodeModel | ConnectorModel = args.source;
+        
         this.inAction = false;
+        /*
         const entryValue: HistoryEntry = {
             type: 'AnnotationPropertyChanged',
             objectId: this.annotationId, undoObject: cloneObject(this.undoElement),
             category: 'Internal', redoObject: cloneObject(redoValue)
         };
         this.commandHandler.addHistoryEntry(entryValue);
+        */
         super.mouseUp(args);
     }
     /**
@@ -2287,11 +2302,13 @@ export class LabelResizeTool extends ToolBase {
         const redoObject: NodeModel | ConnectorModel = ((args.source as Selector).nodes.length) ?
             (args.source as Selector).nodes[0] : (args.source as Selector).connectors[0];
         this.inAction = false;
+        /*
         const entry: HistoryEntry = {
             type: 'AnnotationPropertyChanged', objectId: this.annotationId,
             redoObject: cloneObject(redoObject), undoObject: cloneObject(this.undoElement), category: 'Internal'
         };
         this.commandHandler.addHistoryEntry(entry);
+        */
         super.mouseUp(args);
     }
     /**
@@ -2378,12 +2395,14 @@ export class LabelRotateTool extends ToolBase {
         this.inAction = false;
         const redoEntry: NodeModel | ConnectorModel = ((args.source as Selector).nodes.length) ?
             (args.source as Selector).nodes[0] : (args.source as Selector).connectors[0];
+            /*
         const entryObject: HistoryEntry = {
             type: 'AnnotationPropertyChanged', objectId: this.annotationId,
             redoObject: cloneObject(redoEntry),
             undoObject: cloneObject(this.undoElement), category: 'Internal'
         };
         this.commandHandler.addHistoryEntry(entryObject);
+        */
         super.mouseUp(args);
     }
     /**

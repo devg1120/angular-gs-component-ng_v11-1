@@ -196,10 +196,10 @@ export class DiagramContextMenu {
                 this.parent.copy();
                 break;
             case 'undo':
-                this.parent.undo();
+                //this.parent.undo();
                 break;
             case 'redo':
-                this.parent.redo();
+                //this.parent.redo();
                 break;
             case 'paste':
                 this.parent.paste();

@@ -152,10 +152,12 @@ export class ConnectorEditing extends ToolBase {
         if (this.undoElement) {
             //let obj: SelectorModel;
             const obj: SelectorModel = cloneObject(args.source);
+            /*
             const entry: HistoryEntry = {
                 type: 'SegmentChanged', redoObject: obj, undoObject: this.undoElement, category: 'Internal'
             };
             this.commandHandler.addHistoryEntry(entry);
+            */
         }
         super.mouseUp(args);
     }

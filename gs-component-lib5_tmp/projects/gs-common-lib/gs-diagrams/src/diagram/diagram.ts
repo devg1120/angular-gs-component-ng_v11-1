@@ -244,7 +244,7 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
      *
      * @
      */
-     undoRedoModule: UndoRedo;
+     //undoRedoModule: UndoRedo;
 
     /**
      * `layoutAnimateModule` is used to revert and restore the changes
@@ -602,8 +602,8 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
      *
      * @default undefined
      */
-    @Property()
-     historyManager: History;
+ //   @Property()
+ //    historyManager: History;
 
     /**
      * Customizes the node template
@@ -3433,9 +3433,9 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
      * @
      */
      initHistory(): void {
-        if (this.undoRedoModule) {
-            this.undoRedoModule.initHistory(this);
-        }
+        //if (this.undoRedoModule) {
+        //    this.undoRedoModule.initHistory(this);
+        //}
     }
 
     /**
@@ -3627,6 +3627,7 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
      *
      * @returns { void } Restores the last undone action .\
      */
+     /*
      redo(): void {
         this.canEnableBlazorObject = true;
         this.callBlazorModel = false;
@@ -3637,7 +3638,7 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
         this.callBlazorModel = true;
         this.canEnableBlazorObject = false;
     }
-
+   */
      getBlazorDiagramObjects(objects?: (NodeModel | ConnectorModel)[]): void {
         if (objects) {
             for (let j: number = 0; j < objects.length; j++) {
@@ -3896,9 +3897,9 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
         if (this.nameTable[swimLane]) {
             const swimlaneNode: NodeModel = this.nameTable[swimLane];
             this.protectPropertyChange(true);
-            if (this.undoRedoModule) {
-                this.historyManager.startGroupAction();
-            }
+            //if (this.undoRedoModule) {
+            //    //this.historyManager.startGroupAction();
+            //}
             if (!this.nameTable[node.id]) {
                 node.offsetX = swimlaneNode.wrapper.bounds.width + swimlaneNode.wrapper.bounds.x;
                 node.offsetY = swimlaneNode.wrapper.bounds.height + swimlaneNode.wrapper.bounds.y;
@@ -3940,9 +3941,9 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
                     }
                 }
             }
-            if (this.undoRedoModule) {
-                this.historyManager.endGroupAction();
-            }
+            //if (this.undoRedoModule) {
+            //    //this.historyManager.endGroupAction();
+            //}
             this.protectPropertyChange(false);
         }
         this.updateDiagramElementQuad();
@@ -4017,11 +4018,13 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
         if (isHistoryAdded) {
             const childTable: object = {};
             childTable[id] = cloneObject(this.getObject(id));
+            /*
             const entry: HistoryEntry = {
                 type: 'AddChildToGroupNode', changeType: 'Insert', undoObject: cloneObject(group),
                 redoObject: cloneObject(group), category: 'Internal', objectId: id, childTable: childTable
             };
             this.addHistoryEntry(entry);
+            */
             this.endGroupAction();
         }
         this.protectPropertyChange(propChange);
@@ -4414,11 +4417,13 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
                 }
                 if (!(this.diagramActions & DiagramAction.UndoRedo) && !(this.diagramActions & DiagramAction.Group) &&
                     !(this.diagramActions & DiagramAction.PreventHistory)) {
+                    /*
                     const entry: HistoryEntry = {
                         type: 'CollectionChanged', changeType: 'Insert', undoObject: cloneObject(obj),
                         redoObject: cloneObject(obj), category: 'Internal'
                     };
                     this.addHistoryEntry(entry);
+                    */
                 }
                 this.parentObject = undefined;
                 if (this.mode === 'SVG') {
@@ -4514,11 +4519,13 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
             this.initConnectors(connector, this.commandHandler.getObjectLayer(node.id), false);
             this.updateDiagramObject(node);
             if (!(this.diagramActions & DiagramAction.UndoRedo) && !(this.diagramActions & DiagramAction.Group)) {
+            /*
                 const entry: HistoryEntry = {
                     type: 'CollectionChanged', changeType: 'Insert', undoObject: cloneObject(annotation),
                     redoObject: cloneObject(annotation), category: 'Internal'
                 };
                 this.addHistoryEntry(entry);
+                */
             }
         }
     }
@@ -4699,23 +4706,27 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
                     }
                     if ((!(this.diagramActions & DiagramAction.UndoRedo)) && !(this.diagramActions & DiagramAction.PreventHistory) &&
                         (obj instanceof Node || obj instanceof Connector)) {
+                        /*
                         const entry: HistoryEntry = {
                             type: 'CollectionChanged', changeType: 'Remove', undoObject: cloneObject(obj),
                             redoObject: cloneObject(obj), category: 'Internal'
                         };
+                        */
                         if (!(this.diagramActions & DiagramAction.Clear)) {
-                            if ((obj as Node).children && !(obj as Node).isLane && !(obj as Node).isPhase && (obj as Node).children.length > 0 && this.undoRedoModule && this.layout.type === 'None') {
-                                this.historyManager.startGroupAction();
-                                groupAction = true;
-                            }
+                            //if ((obj as Node).children && !(obj as Node).isLane && !(obj as Node).isPhase && (obj as Node).children.length > 0 && this.undoRedoModule && this.layout.type === 'None') {
+                            //    //this.historyManager.startGroupAction();
+                            //    groupAction = true;
+                            //}
                         }
                         if (obj instanceof Node) {
                             this.removeDependentConnector(obj);
                         }
                         if (!(obj as Node).isLane && !(obj as Node).isPhase) {
+                        /*
                             if (!(this.diagramActions & DiagramAction.Clear) && !this.isStackChild(obj as Node)) {
                                 this.addHistoryEntry(entry);
                             }
+                            */
                         }
                     }
                     if ((obj as Node).children && !(obj as Node).isLane && !(obj as Node).isPhase &&
@@ -4793,7 +4804,7 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
                         this.commandHandler.getBlazorOldValues();
                     }
                     if (groupAction) {
-                        this.historyManager.endGroupAction();
+                        //this.historyManager.endGroupAction();
                     }
                     if (isSelected(this, currentObj)) {
                         this.unSelect(currentObj);
@@ -4835,11 +4846,11 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
                 }
             }
         } else if (selectedItems.length > 0) {
-            if (this.undoRedoModule) {
-                this.historyManager.startGroupAction();
-                this.blazorActions |= BlazorAction.GroupingInProgress;
-                groupAction = true;
-            }
+            //if (this.undoRedoModule) {
+            //    //this.historyManager.startGroupAction();
+            //    this.blazorActions |= BlazorAction.GroupingInProgress;
+            //    groupAction = true;
+            //}
             if (isBlazor() && selectedItems.length > 1) {
                 this.clearSelection();
             }
@@ -4873,7 +4884,7 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
                 this.isServerUpdate = true;
                 this.commandHandler.getBlazorOldValues();
                 this.UpdateBlazorDiagramModelCollection(undefined, undefined, undefined, true);
-                this.historyManager.endGroupAction();
+                //this.historyManager.endGroupAction();
                 this.isServerUpdate = false;
             }
             this.clearSelection();
@@ -4905,6 +4916,7 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
                 sourceIndex: parent.wrapper.children.indexOf(obj.wrapper), source: obj,
                 target: undefined, targetIndex: undefined
             };
+            /*
             const entry: HistoryEntry = {
                 type: 'StackChildPositionChanged', redoObject: {
                     sourceIndex: undefined, source: obj,
@@ -4916,6 +4928,7 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
             if (!(this.diagramActions & DiagramAction.UndoRedo)) {
                 this.addHistoryEntry(entry);
             }
+            */
         }
         return isstack;
     }
@@ -5416,10 +5429,10 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
      * @param {number} stackLimit - defines stackLimit of the history manager.
      */
      setStackLimit(stackLimit: number): void {
-        if (this.undoRedoModule && stackLimit) {
-            this.historyManager.stackLimit = stackLimit;
-            this.undoRedoModule.applyLimit(this.historyManager.currentEntry, stackLimit, this, true);
-        }
+        //if (this.undoRedoModule && stackLimit) {
+        //    //this.historyManager.stackLimit = stackLimit;
+        //    //this.undoRedoModule.applyLimit(this.historyManager.currentEntry, stackLimit, this, true);
+        //}
     }
 
     /**
@@ -5427,9 +5440,9 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
      * @returns { void } To clear history of the diagram .\
      */
      clearHistory(): void {
-        if (this.undoRedoModule) {
-            this.undoRedoModule.clearHistory(this);
-        }
+        //if (this.undoRedoModule) {
+        //    this.undoRedoModule.clearHistory(this);
+        //}
     }
 
     /**
@@ -5515,11 +5528,13 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
                 canvas.children.push((obj as Node).initPortWrapper(obj.ports[obj.ports.length - 1] as Port));
             }
             if (!(this.diagramActions & DiagramAction.UndoRedo) && !(this.diagramActions & DiagramAction.Group)) {
+            /*
                 const entry: HistoryEntry = {
                     type: 'PortCollectionChanged', changeType: 'Insert', undoObject: cloneObject(newObj),
                     redoObject: cloneObject(obj), category: 'Internal'
                 };
                 this.addHistoryEntry(entry);
+                */
             }
         }
         if (ports.length > 1) {
@@ -5843,11 +5858,13 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
                     for (let k: number = 0; k < obj.ports.length; k++) {
                         if (canvas.id.match('_' + obj.ports[k].id + '$')) {
                             if (!(this.diagramActions & DiagramAction.UndoRedo)) {
+                            /*
                                 const entry: HistoryEntry = {
                                     type: 'PortCollectionChanged', changeType: 'Remove', undoObject: cloneObject(obj.ports[k]),
                                     redoObject: cloneObject(obj), category: 'Internal'
                                 };
                                 this.addHistoryEntry(entry);
+                                */
                             }
                             obj.ports.splice(k, 1);
                         }
@@ -7011,14 +7028,14 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
                 execute: this.selectAll.bind(this), canExecute: this.canExecute.bind(this),
                 gesture: { key: Keys.A, keyModifiers: KeyModifiers.Control }
             },
-            'undo': {
-                execute: this.undo.bind(this), canExecute: this.canExecute.bind(this),
-                gesture: { key: Keys.Z, keyModifiers: KeyModifiers.Control }
-            },
-            'redo': {
-                execute: this.redo.bind(this), canExecute: this.canExecute.bind(this),
-                gesture: { key: Keys.Y, keyModifiers: KeyModifiers.Control }
-            },
+            //'undo': {
+            //    execute: this.undo.bind(this), canExecute: this.canExecute.bind(this),
+            //    gesture: { key: Keys.Z, keyModifiers: KeyModifiers.Control }
+            //},
+            //'redo': {
+            //    execute: this.redo.bind(this), canExecute: this.canExecute.bind(this),
+            //    gesture: { key: Keys.Y, keyModifiers: KeyModifiers.Control }
+            //},
             'nudgeUp': {
 
                 execute: this.nudgeCommand.bind(this, 'Up'),
@@ -11162,7 +11179,7 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
             if (data) {
                 // eslint-disable-next-line max-len
                 const url: string = node instanceof Connector ? this.dataSourceSettings.connectionDataSource.crudAction[crud] : this.dataSourceSettings.crudAction[crud];
-                this.raiseAjaxPost(JSON.stringify(data), url);
+                //this.raiseAjaxPost(JSON.stringify(data), url);
             }
             return data;
         }
@@ -11182,7 +11199,7 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
                 data.push(this.parameterMap(newObjects.nodes[i] as Node, true));
             }
             if (data && data.length > 0){
-                this.raiseAjaxPost(JSON.stringify(data), nodeCrudAction);
+                //this.raiseAjaxPost(JSON.stringify(data), nodeCrudAction);
             }
         }
         if (newObjects.connectors) {
@@ -11192,7 +11209,7 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
                 data.push(this.parameterMap(newObjects.connectors[i] as Connector, false));
             }
             if (data && data.length > 0){
-                this.raiseAjaxPost(JSON.stringify(data), connectorCrudAction);
+                //this.raiseAjaxPost(JSON.stringify(data), connectorCrudAction);
             }
         }
     }

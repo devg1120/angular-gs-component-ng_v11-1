@@ -699,11 +699,13 @@ export class BpmnDiagrams {
                     }
                 }
                 const obj: NodeModel = cloneObject(source);
+                /*
                 const entry: HistoryEntry = {
                     type: 'PositionChanged', undoObject: { nodes: [redoElement] },
                     redoObject: { nodes: [obj] }, category: 'Internal'
                 };
                 diagram.addHistoryEntry(entry);
+                */
                 if (diagram.mode === 'SVG') {
                     if (source.zIndex < target.zIndex) {
                         diagram.updateProcesses(source as Node);
@@ -1207,11 +1209,13 @@ export class BpmnDiagrams {
         let index: number = bpmnShape.annotations.indexOf(annotation);
         if (index !== -1) {
             if (!(diagram.diagramActions & DiagramAction.UndoRedo) && !(diagram.diagramActions & DiagramAction.Group)) {
+            /*
                 const entry: HistoryEntry = {
                     type: 'CollectionChanged', changeType: 'Remove', undoObject: cloneObject(annotation),
                     redoObject: cloneObject(annotation), category: 'Internal'
                 };
                 diagram.addHistoryEntry(entry);
+                */
             }
             bpmnShape.annotations.splice(index, 1);
             const entry: {} = this.annotationObjects[parentNode.id];

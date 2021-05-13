@@ -839,6 +839,7 @@ export class CommandHandler {
     public cut(): void {
         let index: number;
         this.clipboardData.pasteIndex = 0;
+        /*
         if (this.diagram.undoRedoModule) {
         //gs this.diagram.historyManager.startGroupAction();
         }
@@ -849,6 +850,7 @@ export class CommandHandler {
         if (this.diagram.mode !== 'SVG') {
             this.diagram.refreshDiagramLayer();
         }
+        */
     }
     private UpdateBlazorDiagramModelLayers(layer: Layer, isRemove: boolean): void {
         const blazorInterop: string = 'sfBlazor';
@@ -1159,8 +1161,10 @@ export class CommandHandler {
         if (group) {
             this.select(group);
         }
+        /*
         const entry: HistoryEntry = { type: 'Group', undoObject: obj, redoObject: obj, category: 'Internal' };
         this.addHistoryEntry(entry);
+        */
         this.diagram.diagramActions = this.diagram.diagramActions & ~DiagramAction.Group;
         this.diagram.protectPropertyChange(protectedChange);
         this.updateBlazorSelector();
@@ -1211,6 +1215,7 @@ export class CommandHandler {
                 }
                 this.resetDependentConnectors((node as Node).inEdges, true);
                 this.resetDependentConnectors((node as Node).outEdges, false);
+                /*
                 const entry: HistoryEntry = {
                     type: 'UnGroup', undoObject: undoObject,
                     redoObject: undoObject, category: 'Internal'
@@ -1218,6 +1223,7 @@ export class CommandHandler {
                 if (!(this.diagram.diagramActions & DiagramAction.UndoRedo)) {
                     this.addHistoryEntry(entry);
                 }
+                */
                 if ((node as Node).parentId) {
                     this.diagram.deleteChild(node, parentNode);
                 }
@@ -1243,6 +1249,7 @@ export class CommandHandler {
                 newProp = { sourceID: newConnector.sourceID, sourcePortID: newConnector.sourcePortID } as Connector;
             }
             this.diagram.connectorPropertyChange(newConnector as Connector, {} as Connector, newProp);
+            /*
             const entry: HistoryEntry = {
                 type: 'ConnectionChanged', undoObject: { connectors: [undoObject], nodes: [] },
                 redoObject: { connectors: [cloneObject(newConnector)], nodes: [] }, category: 'Internal'
@@ -1250,6 +1257,7 @@ export class CommandHandler {
             if (!(this.diagram.diagramActions & DiagramAction.UndoRedo)) {
                 this.addHistoryEntry(entry);
             }
+            */
         }
     }
 
@@ -1274,10 +1282,12 @@ export class CommandHandler {
                 if (this.clipboardData.pasteIndex !== 0) {
                     this.clearSelection();
                 }
+                /*
                 if (this.diagram.undoRedoModule) {
                     groupAction = true;
                     //gs this.diagram.historyManager.startGroupAction();
-                }
+                }*/
+
                 for (const copy of copiedItems) {
                     objectTable[copy.id] = copy;
                 }
@@ -2304,10 +2314,12 @@ export class CommandHandler {
                     this.diagram.refreshCanvasLayers();
                 }
                 const redoObject: SelectorModel = cloneObject(this.diagram.selectedItems);
+                /*
                 const entry: HistoryEntry = { type: 'SendToBack', category: 'Internal', undoObject: undoObject, redoObject: redoObject };
                 if (!(this.diagram.diagramActions & DiagramAction.UndoRedo)) {
                     this.addHistoryEntry(entry);
                 }
+                */
             }
         }
         this.diagram.protectPropertyChange(false);
@@ -2477,10 +2489,12 @@ export class CommandHandler {
                 this.diagram.refreshCanvasLayers();
             }
             const redoObject: SelectorModel = cloneObject(this.diagram.selectedItems);
+            /*
             const entry: HistoryEntry = { type: 'BringToFront', category: 'Internal', undoObject: undoObject, redoObject: redoObject };
             if (!(this.diagram.diagramActions & DiagramAction.UndoRedo)) {
                 this.addHistoryEntry(entry);
             }
+            */
         }
         this.diagram.protectPropertyChange(false);
         if (isBlazor()) {
@@ -2668,6 +2682,7 @@ export class CommandHandler {
                 (this.diagram.nameTable[temp] instanceof Node) ? redo.nodes.push(cloneObject(this.diagram.nameTable[temp])) :
                     redo.connectors.push(cloneObject(this.diagram.nameTable[temp]));
 
+/*
                 const historyEntry: HistoryEntry = {
                     type: 'SendForward', category: 'Internal',
                     undoObject: undoObject, redoObject: redo
@@ -2675,6 +2690,7 @@ export class CommandHandler {
                 if (!(this.diagram.diagramActions & DiagramAction.UndoRedo)) {
                     this.addHistoryEntry(historyEntry);
                 }
+                */
             }
             if (isBlazor()) {
                 const elements: (NodeModel|ConnectorModel)[] = [];
@@ -2752,10 +2768,12 @@ export class CommandHandler {
                 (this.diagram.nameTable[temp] instanceof Node) ? redoObject.nodes.push(cloneObject(this.diagram.nameTable[temp])) :
                     redoObject.connectors.push(cloneObject(this.diagram.nameTable[temp]));
 
+/*
                 const entry: HistoryEntry = { type: 'SendBackward', category: 'Internal', undoObject: undoObject, redoObject: redoObject };
                 if (!(this.diagram.diagramActions & DiagramAction.UndoRedo)) {
                     this.addHistoryEntry(entry);
                 }
+                */
                 //swap the nodes
             }
         }
@@ -5004,10 +5022,12 @@ Remove terinal segment in initial
                 obj.offsetX = obj.wrapper.offsetX;
                 obj.offsetY = obj.wrapper.offsetY;
                 const undoElement: NodeModel = clone(obj);
+                /*
                 const entry: HistoryEntry = {
                     type: 'PositionChanged', redoObject: { nodes: [undoElement] }, undoObject: { nodes: [node] }, category: 'Internal'
                 };
                 this.addHistoryEntry(entry);
+                */
                 this.diagram.endGroupAction();
             }
         }
@@ -5123,9 +5143,11 @@ Remove terinal segment in initial
     }
 
     /** @private */
+    /*
     public addHistoryEntry(entry: HistoryEntry): void {
         this.diagram.addHistoryEntry(entry);
     }
+    */
     /** @private */
     public align(objects: (NodeModel | ConnectorModel)[], option: AlignmentOptions, type: AlignmentMode): void {
         if (objects.length > 0) {
@@ -5159,11 +5181,13 @@ Remove terinal segment in initial
             }
             undoObj = clone(undoObj) as SelectorModel;
             redoObj = clone(redoObj) as SelectorModel;
+            /*
             const entry: HistoryEntry = {
                 type: 'Align', category: 'Internal',
                 undoObject: cloneObject(undoObj), redoObject: cloneObject(redoObj)
             };
             this.addHistoryEntry(entry);
+            */
         }
     }
     /**
@@ -5235,11 +5259,13 @@ Remove terinal segment in initial
             }
             undoSelectorObj = clone(undoSelectorObj) as SelectorModel;
             redoSelectorObj = clone(redoSelectorObj) as SelectorModel;
+            /*
             const entry: HistoryEntry = {
                 type: 'Distribute', category: 'Internal',
                 undoObject: cloneObject(undoSelectorObj), redoObject: cloneObject(redoSelectorObj)
             };
             this.addHistoryEntry(entry);
+            */
         }
     }
     /* eslint-enable */
@@ -5283,11 +5309,13 @@ Remove terinal segment in initial
             this.diagram.updateSelector();
             undoObject = clone(undoObject) as SelectorModel;
             redoObject = clone(redoObject) as SelectorModel;
+            /*
             const entry: HistoryEntry = {
                 type: 'Sizing', category: 'Internal',
                 undoObject: cloneObject(undoObject), redoObject: cloneObject(redoObject)
             };
             this.addHistoryEntry(entry);
+            */
         }
     }
     private storeObject(selectorObject: SelectorModel, obj: NodeModel | ConnectorModel): SelectorModel {

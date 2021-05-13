@@ -3,8 +3,8 @@
   "compilerOptions": {
     "outDir": "../../../out-tsc/lib",
         "target": "es5",
-      "module": "amd",
-      "declaration": true,
+      "module": "es6",
+      "declaration": false,
       "removeComments": true,
       "noLib": false,
       "experimentalDecorators": true,
@@ -12,7 +12,7 @@
       "pretty": true,
       "allowUnreachableCode": false,
       "allowUnusedLabels": false,
-      "noImplicitAny": true,
+      "noImplicitAny": false,
       "noImplicitReturns": true,
       "noImplicitUseStrict": false,
       "noFallthroughCasesInSwitch": true,
@@ -20,8 +20,8 @@
       "forceConsistentCasingInFileNames": true,
       "moduleResolution": "node",
       "suppressImplicitAnyIndexErrors": true,
-      "types": ["jasmine","jasmine-ajax","requirejs","chai","es6-promise"],
-      "lib": ["es2015.collection","es2015.core","es5", "dom"]
+      "types": [],
+      "lib": ["es5", "es6", "dom"]
   },
   "angularCompilerOptions": {
     "annotateForClosureCompiler": false,

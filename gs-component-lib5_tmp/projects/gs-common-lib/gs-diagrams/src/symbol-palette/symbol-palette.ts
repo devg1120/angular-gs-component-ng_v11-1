@@ -1518,7 +1518,8 @@ export class SymbolPalette extends Component<HTMLElement> implements INotifyProp
         this.isMethod = true;
         if (evt && evt.target) {
 
-            if (evt.srcElement.id === 'iconSearch') {
+            //gs if (evt.srcElement.id === 'iconSearch') {
+            if ((<HTMLElement>evt.srcElement).id === 'iconSearch') {   //gs
                 const element: HTMLElement = document.getElementById('iconSearch');
                 if (element.classList.contains('e-clear-searchtext')) {
                     element.className = 'e-input-group-icon e-search e-icons';
