@@ -1550,7 +1550,7 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
      serviceLocator: ServiceLocator;
     /** @ */
      views: string[];
-     views_dic: { [key: string]: View; } = {};
+     views_dic: { [key: string]: Diagram; } = {};
     /** @ */
      isLoading: Boolean;
     /** @ */
@@ -1740,21 +1740,12 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
                     this.element.style.width = this.getSizeValue(this.width);
                     this.element.style.height = this.getSizeValue(this.height);
                     this.eventHandler.updateViewPortSize(this.element);
-
-                    //for (const view of this.views) {
-                    //    const temp: View = this.views[view];
-                    //    if (!(temp instanceof Diagram)) {
-                    //        temp.updateView(temp);
-                    //    }
-                    //}
-
-                    Object.keys(this.views_dic).forEach(key => {
-                        const temp: View = this.views_dic[key];
+                    for (const view of this.views) {
+                        const temp: View = this.views[view];
                         if (!(temp instanceof Diagram)) {
                             temp.updateView(temp);
                         }
-                    });
-
+                    }
                     break;
                 case 'nodes':
                     if (newProp.nodes.length > 0 && oldProp.nodes.length === 0) {
@@ -7009,8 +7000,7 @@ export class Diagram extends Component<HTMLElement> implements INotifyPropertyCh
      initViews(): void {
         if (!this.isLoading) {
             this.views.push(this.element.id);
-            //this.views_dic[this.element.id] = this;
-            //this.views[this.element.id] = this;
+            this.views_dic[this.element.id] = this;
         }
     }
 

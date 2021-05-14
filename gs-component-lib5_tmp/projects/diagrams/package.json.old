@@ -1,0 +1,15 @@
+{
+		"name": "@devg1120/gs-angular-spreadsheet",
+		"version": "0.0.1",
+		"dependencies": {
+				"@syncfusion/ej2-angular-base": "^19.1.58",
+				"@syncfusion/ej2-base": "~19.1.57",
+				"@syncfusion/ej2-spreadsheet": "19.1.58"
+		},
+		"devDependencies": {
+				"@angular/common": "~8.0.0",
+				"@angular/compiler": "~8.0.0",
+				"@angular/core": "~8.0.0",
+				"node-sass": "^5.0.0"
+		}
+}

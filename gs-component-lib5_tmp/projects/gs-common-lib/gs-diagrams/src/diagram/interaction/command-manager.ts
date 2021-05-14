@@ -1358,10 +1358,10 @@ export class CommandHandler {
                     this.getBlazorOldValues();
                     this.diagram.select(copiedObject, true);
                 }
-                if (groupAction === true) {
+                //if (groupAction === true) {
                 //gs this.diagram.historyManager.endGroupAction();
-                    groupAction = false;
-                }
+                //    groupAction = false;
+                //}
                 if (this.diagram.mode !== 'SVG') {
                     this.diagram.refreshDiagramLayer();
                 }

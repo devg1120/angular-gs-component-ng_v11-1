@@ -169,6 +169,199 @@
           }
         }
       }
+    },
+    "@gs-common-lib/gs-spreadsheet": {
+      "projectType": "library",
+      "root": "projects/gs-common-lib/gs-spreadsheet",
+      "sourceRoot": "projects/gs-common-lib/gs-spreadsheet/src",
+      "prefix": "lib",
+      "schematics":{
+             "@schematics/angular:component": {
+                   "style": "scss" }
+                   },
+            "styles": [
+                "styles/material.scss"
+                ],
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+            "aot": false,
+          "options": {
+            "tsConfig": "projects/gs-common-lib/gs-spreadsheet/tsconfig.lib.json",
+            "project": "projects/gs-common-lib/gs-spreadsheet/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/gs-common-lib/gs-spreadsheet/src/test.ts",
+            "tsConfig": "projects/gs-common-lib/gs-spreadsheet/tsconfig.spec.json",
+            "karmaConfig": "projects/gs-common-lib/gs-spreadsheet/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/gs-common-lib/gs-spreadsheet/tsconfig.lib.json",
+              "projects/gs-common-lib/gs-spreadsheet/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "@gs-common-lib/gs-base": {
+      "projectType": "library",
+      "root": "projects/gs-common-lib/gs-base",
+      "sourceRoot": "projects/gs-common-lib/gs-base/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/gs-common-lib/gs-base/tsconfig.lib.json",
+            "project": "projects/gs-common-lib/gs-base/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/gs-common-lib/gs-base/src/test.ts",
+            "tsConfig": "projects/gs-common-lib/gs-base/tsconfig.spec.json",
+            "karmaConfig": "projects/gs-common-lib/gs-base/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/gs-common-lib/gs-base/tsconfig.lib.json",
+              "projects/gs-common-lib/gs-base/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "@gs-common-lib/gs-angular-base": {
+      "projectType": "library",
+      "root": "projects/gs-common-lib/gs-angular-base",
+      "sourceRoot": "projects/gs-common-lib/gs-angular-base/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/gs-common-lib/gs-angular-base/tsconfig.lib.json",
+            "project": "projects/gs-common-lib/gs-angular-base/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/gs-common-lib/gs-angular-base/src/test.ts",
+            "tsConfig": "projects/gs-common-lib/gs-angular-base/tsconfig.spec.json",
+            "karmaConfig": "projects/gs-common-lib/gs-angular-base/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/gs-common-lib/gs-angular-base/tsconfig.lib.json",
+              "projects/gs-common-lib/gs-angular-base/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "@gs-common-lib/gs-gantt": {
+      "projectType": "library",
+      "root": "projects/gs-common-lib/gs-gantt",
+      "sourceRoot": "projects/gs-common-lib/gs-gantt/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/gs-common-lib/gs-gantt/tsconfig.lib.json",
+            "project": "projects/gs-common-lib/gs-gantt/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/gs-common-lib/gs-gantt/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/gs-common-lib/gs-gantt/src/test.ts",
+            "tsConfig": "projects/gs-common-lib/gs-gantt/tsconfig.spec.json",
+            "karmaConfig": "projects/gs-common-lib/gs-gantt/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/gs-common-lib/gs-gantt/tsconfig.lib.json",
+              "projects/gs-common-lib/gs-gantt/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "@gs-common-lib/gs-diagrams": {
+      "projectType": "library",
+      "root": "projects/gs-common-lib/gs-diagrams",
+      "sourceRoot": "projects/gs-common-lib/gs-diagrams/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/gs-common-lib/gs-diagrams/tsconfig.lib.json",
+            "project": "projects/gs-common-lib/gs-diagrams/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/gs-common-lib/gs-diagrams/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/gs-common-lib/gs-diagrams/src/test.ts",
+            "tsConfig": "projects/gs-common-lib/gs-diagrams/tsconfig.spec.json",
+            "karmaConfig": "projects/gs-common-lib/gs-diagrams/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/gs-common-lib/gs-diagrams/tsconfig.lib.json",
+              "projects/gs-common-lib/gs-diagrams/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "defaultProject": "spreadsheet"
 }

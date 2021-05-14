@@ -1,0 +1,72 @@
+
+
+import { Component, ViewEncapsulation, ViewChild } from '@angular/core';
+import { DiagramComponent, Diagram, NodeModel, ConnectorModel, OrthogonalSegmentModel, PointPortModel, PointModel, PortVisibility } from '@devg1120/gs-angular-diagrams';
+
+@Component({
+selector: "app-root",
+template: `<ejs-diagram #diagram id="diagram" width="100%" height="580px" [getNodeDefaults] ='getNodeDefaults' [getConnectorDefaults] ='getConnectorDefaults'>
+    <e-nodes>
+        <e-node id='node1' [offsetX]=150 [offsetY]=150>
+            <e-node-annotations>
+                <e-node-annotation content="Node1">
+                </e-node-annotation>
+            </e-node-annotations>
+        </e-node>
+        <e-node id='node2' [offsetX]=350 [offsetY]=150>
+            <e-node-annotations>
+                <e-node-annotation content="Custom Template">
+                </e-node-annotation>
+            </e-node-annotations>
+        </e-node>
+    </e-nodes>
+    <e-connectors>
+        <e-connector id='connector' type='Straight' sourceID='node1' sourcrPortID='port1' targetID='node2' targetPortID='port2'>
+        </e-connector>
+    </e-connectors>
+</ejs-diagram>`,
+encapsulation: ViewEncapsulation.None
+})
+export class AppComponent {
+@ViewChild("diagram")
+public diagram: DiagramComponent;
+public port1: PointPortModel[] = [{
+    id: 'port1',
+    offset: {
+        x: 0,
+        y: 0.5
+    },
+    visibility: PortVisibility.Visible
+}]
+public port2: PointPortModel[] = [
+    {
+        id: 'port2',
+        offset: {
+            x: 0.5,
+            y: 0
+        },
+        visibility: PortVisibility.Visible
+    }
+]
+public getNodeDefaults(node: NodeModel): NodeModel {
+    node.height = 100;
+    node.width = 100;
+    node.style.fill = "#6BA5D7";
+    node.style.strokeColor = "White";
+    return node;
+}
+public getConnectorDefaults(obj: ConnectorModel): ConnectorModel {
+    obj.style = {
+        strokeColor: '#6BA5D7',
+        fill: '#6BA5D7',
+        strokeWidth: 2
+    }
+    obj.targetDecorator = {
+        style: {
+            fill: '#6BA5D7',
+            strokeColor: '#6BA5D7'
+        }
+    }
+    return obj
+}
+}

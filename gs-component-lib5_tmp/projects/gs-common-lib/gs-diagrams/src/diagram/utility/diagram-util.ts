@@ -792,7 +792,8 @@ function tooltipOffset(node: NodeModel | ConnectorModel, mousePosition: PointMod
     const element: HTMLElement = document.getElementById(diagram.element.id);
     const bounds: Rect = node.wrapper.bounds;
 
-    const rect: Rect = element.getBoundingClientRect() as Rect;
+    //const rect: Rect = element.getBoundingClientRect() as Rect;
+    const rect: DOMRect = <DOMRect>element.getBoundingClientRect() ;  //gs
     /* eslint-enable */
     //let horizontalOffset: number = diagram.scroller.horizontalOffset;
     //let verticalOffset: number = diagram.scroller.verticalOffset;
