@@ -1,0 +1,16 @@
+  cd gs-component-lib4
+  npm i
+
+  cd projects/gs-common-lib/gs-spreadsheet/
+  npm i
+  scss2css.sh 
+  ng build @gs-common-lib/gs-spreadsheet
+
+  cd ../../spreadsheet/
+  npm i
+  ng build spreadsheet
+
+  cd ../../
+  npm i
+  export NODE_OPTIONS="--max-old-space-size=3000"
+  ng serve admin --host 0.0.0.0
