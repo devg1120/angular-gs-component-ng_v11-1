@@ -31,6 +31,10 @@
       "gs-common/*": [
         "dist/gs-common/*"
       ],
+      "@gs-common-lib/gs-gantt": [
+        "dist/gs-common-lib/gs-gantt/gs-common-lib-gs-gantt",
+        "dist/gs-common-lib/gs-gantt"
+      ],
       "@gs-common-lib/gs-spreadsheet": [
         "dist/gs-common-lib/gs-spreadsheet"
       ],

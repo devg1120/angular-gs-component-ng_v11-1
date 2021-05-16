@@ -1,0 +1,1 @@
+./component_build.sh -g ej2-gantt

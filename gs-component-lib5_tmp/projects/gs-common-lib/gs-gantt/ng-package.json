@@ -1,0 +1,22 @@
+{
+  "$schema": "../../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../../dist/gs-common-lib/gs-gantt",
+      "assets": [
+                  "./styles"
+                      ],
+  "lib": {
+       "entryFile": "src/public-api.ts",
+       "umdModuleIds": {
+                 "@devg1120/gs-gantt" : "@devg1120/gs-gantt"
+        }
+  },
+    "allowedNonPeerDependencies": [
+          "@syncfusion/ej2-base",
+          "@syncfusion/ej2-angular-base",
+          "@syncfusion/ej2-charts",
+              "@syncfusion/ej2-dropdowns",
+                  "@syncfusion/ej2-grids",
+                  "@syncfusion/ej2-navigations",
+                      "dom"
+         ]
+}

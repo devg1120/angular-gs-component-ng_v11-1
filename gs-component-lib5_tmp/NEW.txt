@@ -1,0 +1,25 @@
+
+ng build @gs-common-lib/guntt
+ng build guntt
+
+```
+@syncfusion/ej2-angular-guntt
+@syncfusion/ej2-guntt
+↓
+@devg1120/gs-angular-guntt
+@devg1120/gs-guntt
+```
+## step 1 ##
+ng g application admin2 -style=scss --routing=true
+ng g library gantt
+ng g library '@gs-common-lib/gs-gantt'
+
+--------------------------------------------
+ng g library @gs-common-lib/gs-gantt
+ng build @gs-common-lib/gs-gantt
+
+--------------------------------------------
+ng g library @gs-common-lib/gs-diagrams
+component_build.sh -g ej2-diagrams
+ng build @gs-common-lib/gs-diagrams
+

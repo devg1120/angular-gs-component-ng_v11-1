@@ -282,6 +282,46 @@
           }
         }
       }
+    },
+    "@gs-common-lib/gs-gantt": {
+      "projectType": "library",
+      "root": "projects/gs-common-lib/gs-gantt",
+      "sourceRoot": "projects/gs-common-lib/gs-gantt/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/gs-common-lib/gs-gantt/tsconfig.lib.json",
+            "project": "projects/gs-common-lib/gs-gantt/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/gs-common-lib/gs-gantt/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/gs-common-lib/gs-gantt/src/test.ts",
+            "tsConfig": "projects/gs-common-lib/gs-gantt/tsconfig.spec.json",
+            "karmaConfig": "projects/gs-common-lib/gs-gantt/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/gs-common-lib/gs-gantt/tsconfig.lib.json",
+              "projects/gs-common-lib/gs-gantt/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "defaultProject": "spreadsheet"
 }
